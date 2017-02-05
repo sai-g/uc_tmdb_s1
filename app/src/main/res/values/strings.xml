@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">The Movie DB</string>
+    <string name="movie_title">%1$s (%2$s)</string>
+    <string name="movie_user_rating">user rating : %1$s</string>
+    <string name="movie_popularity">popularity : %1$s</string>
+</resources>
