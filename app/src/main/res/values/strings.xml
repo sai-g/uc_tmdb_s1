@@ -10,6 +10,9 @@
     <string name="highest_rated">Highest Rated</string>
     <string name="movie_poster">Movie Poster</string>
     <string name="overview">Overview</string>
-    <string name="error_message_no_resource">An error has occurred while loading movies. Please try again later8</string>
+    <string name="error_message_no_resource">An error has occurred while loading movies. Please try again later</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

@@ -1,0 +1,31 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/background"
+    tools:context=".MainActivity$MainFragment">
+
+    <!-- Recycler view to add movies upon search -->
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/recycler_view_movies"/>
+
+    <TextView
+        android:id="@+id/movie_error_message_display"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/sub_heading"
+        android:text="@string/error_message_no_resource"
+        android:textSize="@dimen/main_heading_size"
+        android:visibility="invisible" />
+
+    <ProgressBar
+        android:id="@+id/movie_loading_indicator"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        style="@style/AppTheme"
+        android:layout_centerInParent="true"/>
+
+</RelativeLayout>
