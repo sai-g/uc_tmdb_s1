@@ -123,8 +123,8 @@ public class MainFragment extends Fragment implements MovieAdapter.MovieAdapterO
 
                 int totalMoviesCount = mRecyclerView.getLayoutManager().getItemCount();
 
-                Log.d("CURRENT MOVIES COUNT ", String.valueOf(totalMoviesCount));
-                Log.d("CURRENT COUNT ", String.valueOf(getLastVisibleItemPosition()));
+                //Log.d("CURRENT MOVIES COUNT ", String.valueOf(totalMoviesCount));
+                //Log.d("CURRENT COUNT ", String.valueOf(getLastVisibleItemPosition()));
 
                 //check to see if we reached current threshold, request more movies when reaching current threshold
                 if(totalMoviesCount == getLastVisibleItemPosition() + 1) {
@@ -139,7 +139,7 @@ public class MainFragment extends Fragment implements MovieAdapter.MovieAdapterO
         Context context = getActivity();
         Class destinationActivity = MovieInfoActivity.class;
 
-        Log.d("SELECTED MOVIE", selectedMovie.getOriginalTitle());
+        //Log.d("SELECTED MOVIE", selectedMovie.getOriginalTitle());
 
 /*        if(mTempToast != null) {
             mTempToast.cancel();
@@ -180,27 +180,34 @@ public class MainFragment extends Fragment implements MovieAdapter.MovieAdapterO
         @Override
         protected List<MovieDb> doInBackground(String... params) {
 
-            TmdbMovies tmdbMovies = TMDB_API.getMovies();
+            try {
+                TmdbMovies tmdbMovies = TMDB_API.getMovies();
 
-            MovieResultsPage movieResultsPage;
+                MovieResultsPage movieResultsPage;
 
-            // TODO to add language based on location or input from user
-            if (TmdbMovies.MovieMethod.top_rated == CURRENT_MOVIE_METHOD) {
-                movieResultsPage = tmdbMovies.getTopRatedMovies(null, currentPage);
-            }
-            else if (TmdbMovies.MovieMethod.popular == CURRENT_MOVIE_METHOD) {
-                movieResultsPage = tmdbMovies.getPopularMovies(null, currentPage);
-            }
-            else {
-                movieResultsPage = tmdbMovies.getNowPlayingMovies(null, currentPage);
+                // TODO to add language based on location or input from user
+                if (TmdbMovies.MovieMethod.top_rated == CURRENT_MOVIE_METHOD) {
+                    movieResultsPage = tmdbMovies.getTopRatedMovies(null, currentPage);
+                }
+                else if (TmdbMovies.MovieMethod.popular == CURRENT_MOVIE_METHOD) {
+                    movieResultsPage = tmdbMovies.getPopularMovies(null, currentPage);
+                }
+                else {
+                    movieResultsPage = tmdbMovies.getNowPlayingMovies(null, currentPage);
+                }
+
+                if(movieResultsPage != null) {
+                    // increment page number in order to fetch next set of movies from API
+                    currentPage++;
+                    totalPages = movieResultsPage.getTotalPages();
+                    return movieResultsPage.getResults();
+                }
+            } catch (Throwable ex) {
+                // TmDB API throw MovieDbException, but Async task catches it and throw a Throwable. Because of this app is crashing
+                // Tried to override onCancelled by catching MovieDbException here, but didn't work since Aysnc task still throw a Throwable
+                Log.e("Movie DB Exception", "No Internet Connectivity");
             }
 
-            if(movieResultsPage != null) {
-                // increment page number in order to fetch next set of movies from API
-                currentPage++;
-                totalPages = movieResultsPage.getTotalPages();
-                return movieResultsPage.getResults();
-            }
             return null;
         }
 
@@ -213,7 +220,7 @@ public class MainFragment extends Fragment implements MovieAdapter.MovieAdapterO
                 mMovieAdapter.setMovieData(movieDbs);
             }
             // show toast when there is no next page available
-            else if (currentPage >= totalPages) {
+            else if (totalPages > 0 && currentPage >= totalPages) {
                 Toast.makeText(getActivity(), "No more Movies found!!", Toast.LENGTH_LONG).show();
             }
             // clear data in adapter and show error message when there is no response from api
