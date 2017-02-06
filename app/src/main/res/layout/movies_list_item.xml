@@ -14,8 +14,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/movie_poster"
-        android:layout_gravity="left|center_vertical"
-        android:contentDescription="Movie Poster"
+        android:layout_gravity="center_vertical"
+        android:contentDescription="@string/movie_poster"
         android:visibility="invisible"/>
 
     <LinearLayout
@@ -24,14 +24,14 @@
         android:id="@+id/movie_text_content"
         android:orientation="vertical"
         android:gravity="top|start"
-        android:padding="10dp">
+        android:padding="@dimen/child_layout_padding">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/movie_title"
             android:textAlignment="textStart"
-            android:textSize="18sp"
+            android:textSize="@dimen/sub_heading"
             android:textStyle="bold"
             android:text="@string/movie_title"/>
 
@@ -44,7 +44,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/movie_popularity"
-            android:text="Popularity : "
             />
 
     </LinearLayout>

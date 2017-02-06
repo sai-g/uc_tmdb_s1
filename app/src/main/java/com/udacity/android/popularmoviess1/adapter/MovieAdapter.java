@@ -2,14 +2,12 @@ package com.udacity.android.popularmoviess1.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
 import com.udacity.android.popularmoviess1.BuildConfig;
 import com.udacity.android.popularmoviess1.R;
 
@@ -21,6 +19,8 @@ import info.movito.themoviedbapi.TmdbApi;
 import info.movito.themoviedbapi.Utils;
 import info.movito.themoviedbapi.model.MovieDb;
 
+import static com.udacity.android.popularmoviess1.utilities.StringUIUtil.setImageResource;
+
 /**
  * Used to create recycler view list of movies
  * Created by sai_g on 2/1/17.
@@ -28,7 +28,7 @@ import info.movito.themoviedbapi.model.MovieDb;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHolder>{
 
-    private final static DecimalFormat DECIMAL_FORMAT = new DecimalFormat("##.0");
+    public final static DecimalFormat DECIMAL_FORMAT = new DecimalFormat("##.0");
 
     private List<MovieDb> mMovieData;
 
@@ -107,15 +107,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         }
 
         void bind(MovieDb movieDb) {
+
+            // Set image to ImageView
             URL imageUrl = Utils.createImageUrl(MovieAdapterOnClickHandler.TMDB_API, movieDb.getPosterPath(), "w300");
-            if(imageUrl != null) {
-                Context imageContext = mMoviePoster.getContext();
-                Picasso.with(imageContext).load(imageUrl.toString()).into(mMoviePoster);
-                mMoviePoster.setVisibility(View.VISIBLE);
-            }
-            else {
-                Log.e("<IMAGE NOT FOUND>", movieDb.getTitle() + " -- "+ movieDb.getImdbID() + " -- " + imageUrl);
-            }
+            setImageResource(mMoviePoster.getContext(), mMoviePoster, imageUrl, R.drawable.image_not_found);
+            mMoviePoster.setVisibility(View.VISIBLE);
 
             // Movie Title
             String movieTitle = mMovieTitle.getResources().getString(R.string.movie_title, movieDb.getTitle(), movieDb.getReleaseDate().split("-")[0]);

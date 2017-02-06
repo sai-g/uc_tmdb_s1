@@ -4,12 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".MainActivity">
 
-    <item android:title="Most Popular"
+    <item android:title="@string/most_popular"
         android:id="@+id/sort_most_popular"
         app:showAsAction="never"
         android:orderInCategory="1"/>
-    <item android:title="Highest Rated"
+    <item android:title="@string/highest_rated"
         android:id="@+id/sort_highest_rated"
         app:showAsAction="never"
         android:orderInCategory="2"/>
+
 </menu>

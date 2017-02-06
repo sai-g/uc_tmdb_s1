@@ -1,6 +1,15 @@
 <resources>
     <string name="app_name">The Movie DB</string>
     <string name="movie_title">%1$s (%2$s)</string>
-    <string name="movie_user_rating">user rating : %1$s</string>
-    <string name="movie_popularity">popularity : %1$s</string>
+    <string name="movie_user_rating">User Rating : %1$s</string>
+    <string name="movie_popularity">Popularity : %1$s</string>
+
+    <string name="movie_info_overview">%1$s</string>
+    <string name="movie_release_date">Release Date : %1$s</string>
+    <string name="most_popular">Most Popular</string>
+    <string name="highest_rated">Highest Rated</string>
+    <string name="movie_poster">Movie Poster</string>
+    <string name="overview">Overview</string>
+    <string name="error_message_no_resource">An error has occurred while loading movies. Please try again later8</string>
+
 </resources>

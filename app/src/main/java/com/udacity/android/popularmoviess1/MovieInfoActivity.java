@@ -3,12 +3,11 @@ package com.udacity.android.popularmoviess1;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+import android.text.Html;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
 import com.udacity.android.popularmoviess1.adapter.MovieAdapter;
 
 import java.net.URL;
@@ -16,11 +15,21 @@ import java.net.URL;
 import info.movito.themoviedbapi.Utils;
 import info.movito.themoviedbapi.model.MovieDb;
 
+import static com.udacity.android.popularmoviess1.adapter.MovieAdapter.DECIMAL_FORMAT;
+import static com.udacity.android.popularmoviess1.utilities.StringUIUtil.IMAGE_WIDTH;
+import static com.udacity.android.popularmoviess1.utilities.StringUIUtil.getFinalString;
+import static com.udacity.android.popularmoviess1.utilities.StringUIUtil.getFriendlyDateString;
+import static com.udacity.android.popularmoviess1.utilities.StringUIUtil.setImageResource;
+import static com.udacity.android.popularmoviess1.utilities.StringUIUtil.setStringResource;
+
 public class MovieInfoActivity extends AppCompatActivity {
 
     private TextView mMovieTitle;
     private ImageView mMoviePoster;
     private TextView mMovieOverview;
+    private TextView mMovieRating;
+    private TextView mMoviePopularity;
+    private TextView mMovieReleaseDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +42,11 @@ public class MovieInfoActivity extends AppCompatActivity {
 
         mMovieOverview = (TextView) findViewById(R.id.movie_info_overview);
 
+        mMovieRating = (TextView) findViewById(R.id.movie_info_rating);
+
+        mMoviePopularity = (TextView) findViewById(R.id.movie_info_popularity);
+
+        mMovieReleaseDate = (TextView) findViewById(R.id.movie_release_date);
 
         /*
          * Get the intent which started this activity
@@ -46,19 +60,26 @@ public class MovieInfoActivity extends AppCompatActivity {
 
             MovieDb movieDb = (MovieDb) intentThatStartedThisActivity.getSerializableExtra(Intent.EXTRA_TEXT);
 
-            mMovieTitle.setText(movieDb.getOriginalTitle());
+            // Set image to ImageView
+            URL imageUrl = Utils.createImageUrl(MovieAdapter.MovieAdapterOnClickHandler.TMDB_API, movieDb.getPosterPath(), IMAGE_WIDTH);
+            setImageResource(this, mMoviePoster, imageUrl, R.drawable.image_not_found);
+            mMoviePoster.setVisibility(View.VISIBLE);
 
-            URL imageUrl = Utils.createImageUrl(MovieAdapter.MovieAdapterOnClickHandler.TMDB_API, movieDb.getPosterPath(), "w342");
-            if(imageUrl != null) {
-                Picasso.with(this).load(imageUrl.toString()).into(mMoviePoster);
-                mMoviePoster.setVisibility(View.VISIBLE);
-            }
-            else {
-                Log.e("<IMAGE NOT FOUND>", movieDb.getOriginalTitle() + " -- "+ movieDb.getImdbID() + " -- " + imageUrl);
-            }
+            // set textview with string formatted from strings xml
+            setStringResource(mMovieTitle, R.string.movie_title, movieDb.getOriginalTitle(), movieDb.getReleaseDate().split("-")[0]);
 
+            // set overview text
+            String overviewTxt = getFinalString(mMovieOverview, R.string.movie_info_overview, movieDb.getOverview());
+            mMovieOverview.setText(Html.fromHtml(overviewTxt));
 
-            mMovieOverview.setText(movieDb.getOverview());
+            // movie user rating
+            setStringResource(mMovieRating, R.string.movie_user_rating, DECIMAL_FORMAT.format(movieDb.getVoteAverage()));
+
+            // movie popularity
+            setStringResource(mMoviePopularity, R.string.movie_popularity, DECIMAL_FORMAT.format(movieDb.getPopularity()));
+
+            // set movie release date
+            setStringResource(mMovieReleaseDate, R.string.movie_release_date, getFriendlyDateString(movieDb.getReleaseDate()));
         }
     }
 }
