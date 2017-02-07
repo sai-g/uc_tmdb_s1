@@ -1,6 +1,7 @@
 package com.udacity.android.popularmoviess1.adapter;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +24,7 @@ import static com.udacity.android.popularmoviess1.utilities.StringUIUtil.setImag
 
 /**
  * Used to create recycler view list of movies
+ * TODO use parcelable objects in adapter
  * Created by sai_g on 2/1/17.
  */
 
@@ -109,8 +111,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         void bind(MovieDb movieDb) {
 
             // Set image to ImageView
-            URL imageUrl = Utils.createImageUrl(MovieAdapterOnClickHandler.TMDB_API, movieDb.getPosterPath(), "w300");
-            setImageResource(mMoviePoster.getContext(), mMoviePoster, imageUrl, R.drawable.image_not_found);
+            Resources resources = mMoviePoster.getResources();
+            URL imageUrl = Utils.createImageUrl(MovieAdapterOnClickHandler.TMDB_API, movieDb.getPosterPath(), resources.getString(R.string.grid_image_size));
+            // Alternate image will be shown when movie poster image not present
+            int[] alternateImageOptions = {R.drawable.image_not_found, resources.getInteger(R.integer.alt_image_width), resources.getInteger(R.integer.alt_image_height)};
+            setImageResource(mMoviePoster.getContext(), mMoviePoster, imageUrl, alternateImageOptions);
             mMoviePoster.setVisibility(View.VISIBLE);
 
             // Movie Title

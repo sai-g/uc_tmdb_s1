@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -53,12 +54,19 @@ public class MainFragment extends Fragment implements MovieAdapter.MovieAdapterO
 
         // Recycler view to use LinearLayout Manager with VERTICAL orientation
         // Here Layout starts from top to bottom, so reverse layout set to false
-        mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        // Based on display size, column count will be decided
+        int spanCount = getResources().getInteger(R.integer.grid_count);
+        if (spanCount == 1) {
+            mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        }
+        else {
+            mLayoutManager = new GridLayoutManager(getActivity(), spanCount, LinearLayoutManager.VERTICAL, false);
+        }
+
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         // Experiment with this value, when child layout size varies
         mRecyclerView.setHasFixedSize(true);
-
 
         /*
         Using adapter to display data with the Views

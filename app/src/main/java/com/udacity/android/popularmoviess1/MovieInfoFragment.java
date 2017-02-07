@@ -19,7 +19,6 @@ import info.movito.themoviedbapi.Utils;
 import info.movito.themoviedbapi.model.MovieDb;
 
 import static com.udacity.android.popularmoviess1.adapter.MovieAdapter.DECIMAL_FORMAT;
-import static com.udacity.android.popularmoviess1.utilities.StringUIUtil.IMAGE_WIDTH;
 import static com.udacity.android.popularmoviess1.utilities.StringUIUtil.getFinalString;
 import static com.udacity.android.popularmoviess1.utilities.StringUIUtil.getFriendlyDateString;
 import static com.udacity.android.popularmoviess1.utilities.StringUIUtil.setImageResource;
@@ -40,7 +39,6 @@ public class MovieInfoFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_movie_info, container, false);
-
 
         mMovieTitle = (TextView) rootView.findViewById(R.id.movie_info_title);
 
@@ -67,8 +65,10 @@ public class MovieInfoFragment extends Fragment {
             MovieDb movieDb = (MovieDb) intentThatStartedThisActivity.getSerializableExtra(Intent.EXTRA_TEXT);
 
             // Set image to ImageView
-            URL imageUrl = Utils.createImageUrl(MovieAdapter.MovieAdapterOnClickHandler.TMDB_API, movieDb.getPosterPath(), IMAGE_WIDTH);
-            setImageResource(getActivity(), mMoviePoster, imageUrl, R.drawable.image_not_found);
+            URL imageUrl = Utils.createImageUrl(MovieAdapter.MovieAdapterOnClickHandler.TMDB_API, movieDb.getPosterPath(), getResources().getString(R.string.movie_info_image_size));
+            // Alternate image will be shown when movie poster image not present
+            int[] alternateImageOptions = {R.drawable.image_not_found, getResources().getInteger(R.integer.alt_info_image_width), getResources().getInteger(R.integer.alt_info_image_height)};
+            setImageResource(getActivity(), mMoviePoster, imageUrl, alternateImageOptions);
             mMoviePoster.setVisibility(View.VISIBLE);
 
             // set textview with string formatted from strings xml

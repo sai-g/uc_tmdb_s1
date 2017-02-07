@@ -22,8 +22,6 @@ public class StringUIUtil {
     private static SimpleDateFormat SHORTENED_DATE_FORMAT = new SimpleDateFormat("MMM dd, yyyy");
     private static SimpleDateFormat INPUT_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
-    public final static String IMAGE_WIDTH = "w342";
-
     public static String getFinalString(View view, int strResourceId, String... strings) {
 
         if (view == null)
@@ -51,7 +49,7 @@ public class StringUIUtil {
         return null;
     }
 
-    public static void setImageResource(Context context, ImageView imageView, URL imageUrl, int altResourceId) {
+    public static void setImageResource(Context context, ImageView imageView, URL imageUrl, int[] alternateImageOptions) {
 
         if(imageUrl != null) {
             // TODO add placeholder during image load
@@ -59,8 +57,8 @@ public class StringUIUtil {
         }
         else {
             Log.e("<IMAGE NOT FOUND>", context.toString());
-            Picasso.with(context).load(altResourceId)
-                    .resize(300,450).into(imageView);
+            Picasso.with(context).load(alternateImageOptions[0])
+                    .resize(alternateImageOptions[1],alternateImageOptions[2]).into(imageView);
         }
     }
 }

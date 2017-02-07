@@ -10,6 +10,6 @@
     <dimen name="text_content_padding_top">5dp</dimen>
     <dimen name="text_content_padding_bottom">5dp</dimen>
     <dimen name="rating_padding_top">10dp</dimen>
-    <dimen name="rating_padding_bottom">10dp</dimen>
+    <dimen name="rating_padding_bottom">5dp</dimen>
     <dimen name="child_layout_padding">10dp</dimen>
 </resources>
