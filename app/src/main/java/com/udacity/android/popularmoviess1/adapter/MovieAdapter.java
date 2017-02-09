@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.udacity.android.popularmoviess1.BuildConfig;
 import com.udacity.android.popularmoviess1.R;
+import com.udacity.android.popularmoviess1.model.MovieInfo;
 
 import java.net.URL;
 import java.text.DecimalFormat;
@@ -18,7 +19,6 @@ import java.util.List;
 
 import info.movito.themoviedbapi.TmdbApi;
 import info.movito.themoviedbapi.Utils;
-import info.movito.themoviedbapi.model.MovieDb;
 
 import static com.udacity.android.popularmoviess1.utilities.StringUIUtil.setImageResource;
 
@@ -32,7 +32,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
 
     public final static DecimalFormat DECIMAL_FORMAT = new DecimalFormat("##.0");
 
-    private List<MovieDb> mMovieData;
+    private List<MovieInfo> mMovieData;
 
     private final MovieAdapterOnClickHandler mClickHandler;
 
@@ -41,7 +41,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         String API_KEY = BuildConfig.TMDB_API_KEY;
         TmdbApi TMDB_API = new TmdbApi(API_KEY);
 
-        void onClick(MovieDb selectedMovie);
+        void onClick(MovieInfo selectedMovie);
     }
 
     public MovieAdapter(MovieAdapterOnClickHandler mClickHandler) {
@@ -73,7 +73,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
      */
     @Override
     public void onBindViewHolder(MovieAdapterViewHolder holder, int position) {
-        MovieDb currentMovie = mMovieData.get(position);
+        MovieInfo currentMovie = mMovieData.get(position);
         holder.bind(currentMovie);
     }
 
@@ -104,38 +104,38 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         @Override
         public void onClick(View v) {
             int adapterPosition = getAdapterPosition();
-            MovieDb selectedMovie = mMovieData.get(adapterPosition);
+            MovieInfo selectedMovie = mMovieData.get(adapterPosition);
             mClickHandler.onClick(selectedMovie);
         }
 
-        void bind(MovieDb movieDb) {
+        void bind(MovieInfo movieInfo) {
 
             // Set image to ImageView
             Resources resources = mMoviePoster.getResources();
-            URL imageUrl = Utils.createImageUrl(MovieAdapterOnClickHandler.TMDB_API, movieDb.getPosterPath(), resources.getString(R.string.grid_image_size));
+            URL imageUrl = Utils.createImageUrl(MovieAdapterOnClickHandler.TMDB_API, movieInfo.getPosterPath(), resources.getString(R.string.grid_image_size));
             // Alternate image will be shown when movie poster image not present
             int[] alternateImageOptions = {R.drawable.image_not_found, resources.getInteger(R.integer.alt_image_width), resources.getInteger(R.integer.alt_image_height)};
             setImageResource(mMoviePoster.getContext(), mMoviePoster, imageUrl, alternateImageOptions);
             mMoviePoster.setVisibility(View.VISIBLE);
 
             // Movie Title
-            String movieTitle = mMovieTitle.getResources().getString(R.string.movie_title, movieDb.getTitle(), movieDb.getReleaseDate().split("-")[0]);
+            String movieTitle = mMovieTitle.getResources().getString(R.string.movie_title, movieInfo.getTitle(), movieInfo.getReleaseDate().split("-")[0]);
             mMovieTitle.setText(movieTitle);
 
             // Movie popularity
-            String popularity = DECIMAL_FORMAT.format(movieDb.getPopularity());
+            String popularity = DECIMAL_FORMAT.format(movieInfo.getPopularity());
             popularity = mMoviePopularity.getResources().getString(R.string.movie_popularity, popularity);
             mMoviePopularity.setText(popularity);
 
             // Movie user rating
-            String avgRating = DECIMAL_FORMAT.format(movieDb.getVoteAverage());
+            String avgRating = DECIMAL_FORMAT.format(movieInfo.getVoteAverage());
             avgRating = mMovieRating.getResources().getString(R.string.movie_user_rating, avgRating);
             mMovieRating.setText(avgRating);
 
         }
     }
 
-    public void setMovieData(List<MovieDb> movieData) {
+    public void setMovieData(List<MovieInfo> movieData) {
 
         if (mMovieData == null) {
             mMovieData = movieData;

@@ -13,19 +13,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-/*
-
-        if (savedInstanceState != null) {
-            // cleanup any existing fragments
-            getFragmentManager().executePendingTransactions();
-            Fragment fragment = getFragmentManager().findFragmentById(R.id.fragment);
-            if (fragment != null) {
-                getFragmentManager().beginTransaction().remove(fragment).commit();
-            }
-        }
-
-        MainFragment mainFragment = new MainFragment();*/
-
     }
 
     @Override

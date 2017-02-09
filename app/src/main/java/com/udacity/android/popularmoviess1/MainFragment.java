@@ -18,7 +18,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.udacity.android.popularmoviess1.adapter.MovieAdapter;
+import com.udacity.android.popularmoviess1.model.MovieInfo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import info.movito.themoviedbapi.TmdbMovies;
@@ -36,9 +38,9 @@ public class MainFragment extends Fragment implements MovieAdapter.MovieAdapterO
     private ProgressBar mLoadingIndicator;
     private TextView mErrorDisplayView;
 
-    private int currentPage;
-    private int totalPages;
-    private static TmdbMovies.MovieMethod CURRENT_MOVIE_METHOD = TmdbMovies.MovieMethod.now_playing;
+    private int mCurrentPage;
+    private int mTotalPages;
+    private TmdbMovies.MovieMethod mCurrentMovieMethod = TmdbMovies.MovieMethod.now_playing;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -82,7 +84,8 @@ public class MainFragment extends Fragment implements MovieAdapter.MovieAdapterO
         setRecyclerViewScrollListener();
 
         //check to see if this is necessary
-        currentPage = 1;
+        mCurrentPage = 1;
+
         return rootView;
     }
 
@@ -98,12 +101,17 @@ public class MainFragment extends Fragment implements MovieAdapter.MovieAdapterO
         new FetchResultsTask().execute((String[]) null);
     }
 
-
+    /**
+     * to show recycler view and hide error message
+     */
     private void showMovieDbDataView() {
         mErrorDisplayView.setVisibility(View.INVISIBLE);
         mRecyclerView.setVisibility(View.VISIBLE);
     }
 
+    /**
+     * to show error message and hide recycler view
+     */
     private void showErrorMessageView() {
         mRecyclerView.setVisibility(View.INVISIBLE);
         mErrorDisplayView.setVisibility(View.VISIBLE);
@@ -117,7 +125,6 @@ public class MainFragment extends Fragment implements MovieAdapter.MovieAdapterO
     private int getLastVisibleItemPosition() {
         return mLayoutManager.findLastVisibleItemPosition();
     }
-
 
     /**
      * Adding scroll listener inorder to load more movies upon scrolling
@@ -138,22 +145,15 @@ public class MainFragment extends Fragment implements MovieAdapter.MovieAdapterO
                 if(totalMoviesCount == getLastVisibleItemPosition() + 1) {
                     loadMovieDbData();
                 }
+
             }
         });
     }
 
     @Override
-    public void onClick(MovieDb selectedMovie) {
+    public void onClick(MovieInfo selectedMovie) {
         Context context = getActivity();
         Class destinationActivity = MovieInfoActivity.class;
-
-        //Log.d("SELECTED MOVIE", selectedMovie.getOriginalTitle());
-
-/*        if(mTempToast != null) {
-            mTempToast.cancel();
-        }
-        mTempToast = Toast.makeText(this, "Movie Selected - "+selectedMovie.getOriginalTitle(), Toast.LENGTH_LONG);
-        mTempToast.show();*/
 
         Intent startChildActivityIntent = new Intent(context, destinationActivity);
         startChildActivityIntent.putExtra(Intent.EXTRA_TEXT, selectedMovie);
@@ -162,7 +162,7 @@ public class MainFragment extends Fragment implements MovieAdapter.MovieAdapterO
     }
 
     public void resetMovieMethod(TmdbMovies.MovieMethod movieMethod) {
-        CURRENT_MOVIE_METHOD = movieMethod;
+        mCurrentMovieMethod = movieMethod;
         // reset page information
         resetPages();
         mMovieAdapter.clearMovieData();
@@ -171,12 +171,14 @@ public class MainFragment extends Fragment implements MovieAdapter.MovieAdapterO
     }
 
     private void resetPages() {
-        currentPage = 1;
-        totalPages = 0;
+        mCurrentPage = 1;
+        mTotalPages = 0;
     }
 
-
-    private class FetchResultsTask extends AsyncTask<String, Void, List<MovieDb>> {
+    /**
+     * Async task to update movie list upon scrolling or selection
+     */
+    private class FetchResultsTask extends AsyncTask<String, Void, List<MovieInfo>> {
 
         @Override
         protected void onPreExecute() {
@@ -186,7 +188,7 @@ public class MainFragment extends Fragment implements MovieAdapter.MovieAdapterO
         }
 
         @Override
-        protected List<MovieDb> doInBackground(String... params) {
+        protected List<MovieInfo> doInBackground(String... params) {
 
             try {
                 TmdbMovies tmdbMovies = TMDB_API.getMovies();
@@ -194,21 +196,21 @@ public class MainFragment extends Fragment implements MovieAdapter.MovieAdapterO
                 MovieResultsPage movieResultsPage;
 
                 // TODO to add language based on location or input from user
-                if (TmdbMovies.MovieMethod.top_rated == CURRENT_MOVIE_METHOD) {
-                    movieResultsPage = tmdbMovies.getTopRatedMovies(null, currentPage);
+                if (TmdbMovies.MovieMethod.top_rated == mCurrentMovieMethod) {
+                    movieResultsPage = tmdbMovies.getTopRatedMovies(null, mCurrentPage);
                 }
-                else if (TmdbMovies.MovieMethod.popular == CURRENT_MOVIE_METHOD) {
-                    movieResultsPage = tmdbMovies.getPopularMovies(null, currentPage);
+                else if (TmdbMovies.MovieMethod.popular == mCurrentMovieMethod) {
+                    movieResultsPage = tmdbMovies.getPopularMovies(null, mCurrentPage);
                 }
                 else {
-                    movieResultsPage = tmdbMovies.getNowPlayingMovies(null, currentPage);
+                    movieResultsPage = tmdbMovies.getNowPlayingMovies(null, mCurrentPage);
                 }
 
                 if(movieResultsPage != null) {
                     // increment page number in order to fetch next set of movies from API
-                    currentPage++;
-                    totalPages = movieResultsPage.getTotalPages();
-                    return movieResultsPage.getResults();
+                    mCurrentPage++;
+                    mTotalPages = movieResultsPage.getTotalPages();
+                    return convertMovieDbToInfo(movieResultsPage.getResults());
                 }
             } catch (Throwable ex) {
                 // TmDB API throw MovieDbException, but Async task catches it and throw a Throwable. Because of this app is crashing
@@ -220,15 +222,15 @@ public class MainFragment extends Fragment implements MovieAdapter.MovieAdapterO
         }
 
         @Override
-        protected void onPostExecute(List<MovieDb> movieDbs) {
+        protected void onPostExecute(List<MovieInfo> movieInfos) {
 
             // show movie db when there is a movie list present
-            if(movieDbs != null) {
+            if(movieInfos != null) {
                 showMovieDbDataView();
-                mMovieAdapter.setMovieData(movieDbs);
+                mMovieAdapter.setMovieData(movieInfos);
             }
             // show toast when there is no next page available
-            else if (totalPages > 0 && currentPage >= totalPages) {
+            else if (mTotalPages > 0 && mCurrentPage >= mTotalPages) {
                 Toast.makeText(getActivity(), "No more Movies found!!", Toast.LENGTH_LONG).show();
             }
             // clear data in adapter and show error message when there is no response from api
@@ -239,5 +241,34 @@ public class MainFragment extends Fragment implements MovieAdapter.MovieAdapterO
 
             mLoadingIndicator.setVisibility(View.GONE);
         }
+    }
+
+    /**
+     * to convert MovieDb(Api object) to model MovieInfo
+     * @param movieDbs
+     * @return
+     */
+    private static List<MovieInfo> convertMovieDbToInfo(List<MovieDb> movieDbs) {
+
+        List<MovieInfo> movieInfos = null;
+        if (movieDbs != null) {
+
+            movieInfos = new ArrayList<>(1);
+           for (MovieDb movieDb : movieDbs) {
+
+               MovieInfo movieInfo = new MovieInfo();
+               // Builder pattern can be used, but polluting MovieInfo class with more lines of code
+               movieInfo.setOriginalTitle(movieDb.getOriginalTitle());
+               movieInfo.setTitle(movieDb.getTitle());
+               movieInfo.setPopularity(movieDb.getPopularity());
+               movieInfo.setOverview(movieDb.getOverview());
+               movieInfo.setPosterPath(movieDb.getPosterPath());
+               movieInfo.setUserRating(movieDb.getUserRating());
+               movieInfo.setVoteAverage(movieDb.getVoteAverage());
+               movieInfo.setReleaseDate(movieDb.getReleaseDate());
+               movieInfos.add(movieInfo);
+           }
+        }
+        return movieInfos;
     }
 }

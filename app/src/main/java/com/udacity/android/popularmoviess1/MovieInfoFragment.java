@@ -12,11 +12,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.udacity.android.popularmoviess1.adapter.MovieAdapter;
+import com.udacity.android.popularmoviess1.model.MovieInfo;
 
 import java.net.URL;
 
 import info.movito.themoviedbapi.Utils;
-import info.movito.themoviedbapi.model.MovieDb;
 
 import static com.udacity.android.popularmoviess1.adapter.MovieAdapter.DECIMAL_FORMAT;
 import static com.udacity.android.popularmoviess1.utilities.StringUIUtil.getFinalString;
@@ -62,30 +62,30 @@ public class MovieInfoFragment extends Fragment {
          */
         if (intentThatStartedThisActivity.hasExtra(Intent.EXTRA_TEXT)) {
 
-            MovieDb movieDb = (MovieDb) intentThatStartedThisActivity.getSerializableExtra(Intent.EXTRA_TEXT);
+            MovieInfo movieInfo = (MovieInfo) intentThatStartedThisActivity.getParcelableExtra(Intent.EXTRA_TEXT);
 
             // Set image to ImageView
-            URL imageUrl = Utils.createImageUrl(MovieAdapter.MovieAdapterOnClickHandler.TMDB_API, movieDb.getPosterPath(), getResources().getString(R.string.movie_info_image_size));
+            URL imageUrl = Utils.createImageUrl(MovieAdapter.MovieAdapterOnClickHandler.TMDB_API, movieInfo.getPosterPath(), getResources().getString(R.string.movie_info_image_size));
             // Alternate image will be shown when movie poster image not present
             int[] alternateImageOptions = {R.drawable.image_not_found, getResources().getInteger(R.integer.alt_info_image_width), getResources().getInteger(R.integer.alt_info_image_height)};
             setImageResource(getActivity(), mMoviePoster, imageUrl, alternateImageOptions);
             mMoviePoster.setVisibility(View.VISIBLE);
 
             // set textview with string formatted from strings xml
-            setStringResource(mMovieTitle, R.string.movie_title, movieDb.getOriginalTitle(), movieDb.getReleaseDate().split("-")[0]);
+            setStringResource(mMovieTitle, R.string.movie_title, movieInfo.getOriginalTitle(), movieInfo.getReleaseDate().split("-")[0]);
 
             // set overview text
-            String overviewTxt = getFinalString(mMovieOverview, R.string.movie_info_overview, movieDb.getOverview());
+            String overviewTxt = getFinalString(mMovieOverview, R.string.movie_info_overview, movieInfo.getOverview());
             mMovieOverview.setText(Html.fromHtml(overviewTxt));
 
             // movie user rating
-            setStringResource(mMovieRating, R.string.movie_user_rating, DECIMAL_FORMAT.format(movieDb.getVoteAverage()));
+            setStringResource(mMovieRating, R.string.movie_user_rating, DECIMAL_FORMAT.format(movieInfo.getVoteAverage()));
 
             // movie popularity
-            setStringResource(mMoviePopularity, R.string.movie_popularity, DECIMAL_FORMAT.format(movieDb.getPopularity()));
+            setStringResource(mMoviePopularity, R.string.movie_popularity, DECIMAL_FORMAT.format(movieInfo.getPopularity()));
 
             // set movie release date
-            setStringResource(mMovieReleaseDate, R.string.movie_release_date, getFriendlyDateString(movieDb.getReleaseDate()));
+            setStringResource(mMovieReleaseDate, R.string.movie_release_date, getFriendlyDateString(movieInfo.getReleaseDate()));
 
         }
 
