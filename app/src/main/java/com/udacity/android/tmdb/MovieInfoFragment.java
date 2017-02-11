@@ -1,4 +1,4 @@
-package com.udacity.android.popularmoviess1;
+package com.udacity.android.tmdb;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,18 +11,19 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.udacity.android.popularmoviess1.adapter.MovieAdapter;
-import com.udacity.android.popularmoviess1.model.MovieInfo;
+import com.udacity.android.tmdb.adapter.MovieAdapter;
+import com.udacity.android.tmdb.model.MovieInfo;
 
 import java.net.URL;
 
 import info.movito.themoviedbapi.Utils;
 
-import static com.udacity.android.popularmoviess1.adapter.MovieAdapter.DECIMAL_FORMAT;
-import static com.udacity.android.popularmoviess1.utilities.StringUIUtil.getFinalString;
-import static com.udacity.android.popularmoviess1.utilities.StringUIUtil.getFriendlyDateString;
-import static com.udacity.android.popularmoviess1.utilities.StringUIUtil.setImageResource;
-import static com.udacity.android.popularmoviess1.utilities.StringUIUtil.setStringResource;
+import static com.udacity.android.tmdb.utilities.StringUIUtil.DECIMAL_FORMAT;
+import static com.udacity.android.tmdb.utilities.StringUIUtil.getFinalString;
+import static com.udacity.android.tmdb.utilities.StringUIUtil.getFriendlyDateString;
+import static com.udacity.android.tmdb.utilities.StringUIUtil.isEmpty;
+import static com.udacity.android.tmdb.utilities.StringUIUtil.setImageResource;
+import static com.udacity.android.tmdb.utilities.StringUIUtil.setStringResource;
 
 
 public class MovieInfoFragment extends Fragment {
@@ -75,8 +76,12 @@ public class MovieInfoFragment extends Fragment {
             setStringResource(mMovieTitle, R.string.movie_title, movieInfo.getOriginalTitle(), movieInfo.getReleaseDate().split("-")[0]);
 
             // set overview text
-            String overviewTxt = getFinalString(mMovieOverview, R.string.movie_info_overview, movieInfo.getOverview());
-            mMovieOverview.setText(Html.fromHtml(overviewTxt));
+            if (!isEmpty(movieInfo.getOverview())) {
+                // show overview label/title when overview text exists
+                rootView.findViewById(R.id.movie_info_overview_title).setVisibility(View.VISIBLE);
+                String overviewTxt = getFinalString(mMovieOverview, R.string.movie_info_overview, movieInfo.getOverview());
+                mMovieOverview.setText(Html.fromHtml(overviewTxt));
+            }
 
             // movie user rating
             setStringResource(mMovieRating, R.string.movie_user_rating, DECIMAL_FORMAT.format(movieInfo.getVoteAverage()));

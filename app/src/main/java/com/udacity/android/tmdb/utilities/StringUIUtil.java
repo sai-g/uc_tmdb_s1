@@ -1,4 +1,4 @@
-package com.udacity.android.popularmoviess1.utilities;
+package com.udacity.android.tmdb.utilities;
 
 import android.content.Context;
 import android.util.Log;
@@ -9,6 +9,7 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -18,6 +19,9 @@ import java.util.Date;
  */
 
 public class StringUIUtil {
+
+    // formatter to show numbers as xx.x or x.x
+    public final static DecimalFormat DECIMAL_FORMAT = new DecimalFormat("0.0");
 
     private static SimpleDateFormat SHORTENED_DATE_FORMAT = new SimpleDateFormat("MMM dd, yyyy");
     private static SimpleDateFormat INPUT_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
@@ -60,5 +64,9 @@ public class StringUIUtil {
             Picasso.with(context).load(alternateImageOptions[0])
                     .resize(alternateImageOptions[1],alternateImageOptions[2]).into(imageView);
         }
+    }
+
+    public static boolean isEmpty(String str) {
+        return str == null || str.trim().isEmpty();
     }
 }

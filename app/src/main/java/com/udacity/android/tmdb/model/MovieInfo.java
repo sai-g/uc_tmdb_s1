@@ -1,4 +1,4 @@
-package com.udacity.android.popularmoviess1.model;
+package com.udacity.android.tmdb.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;

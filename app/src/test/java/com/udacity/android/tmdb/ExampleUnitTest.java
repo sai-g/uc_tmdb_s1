@@ -1,4 +1,4 @@
-package com.udacity.android.popularmoviess1;
+package com.udacity.android.tmdb;
 
 import org.junit.Test;
 

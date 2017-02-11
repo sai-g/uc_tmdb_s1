@@ -1,4 +1,4 @@
-package com.udacity.android.popularmoviess1;
+package com.udacity.android.tmdb;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.udacity.android.popularmoviess1", appContext.getPackageName());
+        assertEquals("com.udacity.android.tmdb", appContext.getPackageName());
     }
 }

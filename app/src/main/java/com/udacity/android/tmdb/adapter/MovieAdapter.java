@@ -1,4 +1,4 @@
-package com.udacity.android.popularmoviess1.adapter;
+package com.udacity.android.tmdb.adapter;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -9,28 +9,25 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.udacity.android.popularmoviess1.BuildConfig;
-import com.udacity.android.popularmoviess1.R;
-import com.udacity.android.popularmoviess1.model.MovieInfo;
+import com.udacity.android.tmdb.BuildConfig;
+import com.udacity.android.tmdb.R;
+import com.udacity.android.tmdb.model.MovieInfo;
 
 import java.net.URL;
-import java.text.DecimalFormat;
 import java.util.List;
 
 import info.movito.themoviedbapi.TmdbApi;
 import info.movito.themoviedbapi.Utils;
 
-import static com.udacity.android.popularmoviess1.utilities.StringUIUtil.setImageResource;
+import static com.udacity.android.tmdb.utilities.StringUIUtil.DECIMAL_FORMAT;
+import static com.udacity.android.tmdb.utilities.StringUIUtil.setImageResource;
 
 /**
  * Used to create recycler view list of movies
- * TODO use parcelable objects in adapter
  * Created by sai_g on 2/1/17.
  */
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHolder>{
-
-    public final static DecimalFormat DECIMAL_FORMAT = new DecimalFormat("##.0");
 
     private List<MovieInfo> mMovieData;
 

@@ -1,29 +1,17 @@
 # README #
 
-This README would normally document whatever steps are necessary to get your application up and running.
+This is the popular movies app (stage one) built on to TMDB(The Movie Database) API
 
-### What is this repository for? ###
 
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+### How to set up app? ###
 
-### How do I get set up? ###
+To run this app and connect with TMDB API, API Key is needed which should be provided by signing up for one from [themoviedb.org](https://www.themoviedb.org/)
 
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
+#### Including API Key ####
 
-### Contribution guidelines ###
+Add API key to gradle.properties under key _TMDBApiKey_ before building/running this app
 
-* Writing tests
-* Code review
-* Other guidelines
+For eg.
+TMDBApiKey=abcdefghijlm
 
-### Who do I talk to? ###
-
-* Repo owner or admin
-* Other community or team contact
+_Thanks for trying this Android app!!_

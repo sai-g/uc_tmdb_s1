@@ -1,4 +1,4 @@
-package com.udacity.android.popularmoviess1;
+package com.udacity.android.tmdb;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;

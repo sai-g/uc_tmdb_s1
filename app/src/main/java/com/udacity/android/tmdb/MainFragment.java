@@ -1,4 +1,4 @@
-package com.udacity.android.popularmoviess1;
+package com.udacity.android.tmdb;
 
 import android.app.Fragment;
 import android.content.Context;
@@ -17,8 +17,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.udacity.android.popularmoviess1.adapter.MovieAdapter;
-import com.udacity.android.popularmoviess1.model.MovieInfo;
+import com.udacity.android.tmdb.adapter.MovieAdapter;
+import com.udacity.android.tmdb.model.MovieInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,10 +42,16 @@ public class MainFragment extends Fragment implements MovieAdapter.MovieAdapterO
     private int mTotalPages;
     private TmdbMovies.MovieMethod mCurrentMovieMethod = TmdbMovies.MovieMethod.now_playing;
 
+    private View rootView;
+
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+        if (rootView == null) {
+            rootView = inflater.inflate(R.layout.fragment_main, container, false);
+        }else {
+            ((ViewGroup) rootView.getParent()).removeView(rootView);
+        }
 
         /*
         Using findViewById to get RecyclerView from activity_main xml

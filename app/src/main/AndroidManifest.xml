@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.udacity.android.popularmoviess1">
+    package="com.udacity.android.tmdb">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -10,7 +10,9 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <!-- launchmode as single top to retain the state of the main fragment(stop creating fragment everytime)
+                https://developer.android.com/guide/topics/manifest/activity-element.html#lmode -->
+        <activity android:name="com.udacity.android.tmdb.MainActivity" android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -19,9 +21,9 @@
         </activity>
 
         <!-- Child activity to display Movie information -->
-        <activity android:name=".MovieInfoActivity"
+        <activity android:name="com.udacity.android.tmdb.MovieInfoActivity"
             android:label="Movie Info"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName="com.udacity.android.tmdb.MainActivity">
 
         </activity>
     </application>

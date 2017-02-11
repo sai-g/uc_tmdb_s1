@@ -69,6 +69,8 @@
         android:layout_height="wrap_content"
         android:textSize="@dimen/sub_heading"
         android:text="@string/overview"
+        android:id="@+id/movie_info_overview_title"
+        android:visibility="gone"
         android:textStyle="bold"
         android:paddingTop="@dimen/overview_heading_padding_top"/>
     <TextView
