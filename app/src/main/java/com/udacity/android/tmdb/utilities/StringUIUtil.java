@@ -56,7 +56,7 @@ public class StringUIUtil {
     public static void setImageResource(Context context, ImageView imageView, URL imageUrl, int[] alternateImageOptions) {
 
         if(imageUrl != null) {
-            // TODO add placeholder during image load
+            // TODO enhancement:add placeholder during image load
             Picasso.with(context).load(imageUrl.toString()).into(imageView);
         }
         else {

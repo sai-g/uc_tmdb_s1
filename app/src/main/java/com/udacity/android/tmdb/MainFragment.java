@@ -201,7 +201,7 @@ public class MainFragment extends Fragment implements MovieAdapter.MovieAdapterO
 
                 MovieResultsPage movieResultsPage;
 
-                // TODO to add language based on location or input from user
+                // TODO enhancement:to add language based on location or input from user
                 if (TmdbMovies.MovieMethod.top_rated == mCurrentMovieMethod) {
                     movieResultsPage = tmdbMovies.getTopRatedMovies(null, mCurrentPage);
                 }
