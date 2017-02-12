@@ -1,11 +1,12 @@
 apply plugin: 'com.android.application'
+apply plugin: 'android-apt'
 
 android {
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
     defaultConfig {
         applicationId "com.udacity.android.tmdb"
-        minSdkVersion 22
+        minSdkVersion 23
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
@@ -41,14 +42,21 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
-    //Adding TheMovieDB API to simplify ReST call and receive response
-    // Picasso api to load and cache images
     //compile 'com.android.support:support-v4:25.1.1'
     compile 'com.android.support:appcompat-v7:25.1.1'
     compile 'com.android.support:recyclerview-v7:25.1.1'
     compile 'com.android.support:support-core-utils:25.1.1'
-    compile 'info.movito:themoviedbapi:1.4'
-    compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.android.support:support-v4:25.1.1'
+
+    //Adding TheMovieDB API to simplify ReST call and receive response
+    compile 'info.movito:themoviedbapi:1.4'
+
+    // Picasso api to load and cache images
+    compile 'com.squareup.picasso:picasso:2.5.2'
+
+    // library to reduce boilerplate code
+    compile 'com.jakewharton:butterknife:8.4.0'
+    apt 'com.jakewharton:butterknife-compiler:8.4.0'
+
     testCompile 'junit:junit:4.12'
 }

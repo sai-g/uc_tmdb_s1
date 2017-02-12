@@ -16,6 +16,9 @@ import com.udacity.android.tmdb.model.MovieInfo;
 
 import java.net.URL;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import info.movito.themoviedbapi.Utils;
 
 import static com.udacity.android.tmdb.utilities.StringUIUtil.DECIMAL_FORMAT;
@@ -28,30 +31,27 @@ import static com.udacity.android.tmdb.utilities.StringUIUtil.setStringResource;
 
 public class MovieInfoFragment extends Fragment {
 
-    private TextView mMovieTitle;
-    private ImageView mMoviePoster;
-    private TextView mMovieOverview;
-    private TextView mMovieRating;
-    private TextView mMoviePopularity;
-    private TextView mMovieReleaseDate;
+    @BindView(R.id.movie_info_title)
+    TextView mMovieTitle;
+    @BindView(R.id.movie_info_poster)
+    ImageView mMoviePoster;
+    @BindView(R.id.movie_info_overview)
+    TextView mMovieOverview;
+    @BindView(R.id.movie_info_rating)
+    TextView mMovieRating;
+    @BindView(R.id.movie_info_popularity)
+    TextView mMoviePopularity;
+    @BindView(R.id.movie_release_date)
+    TextView mMovieReleaseDate;
+
+    private Unbinder unbinder;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_movie_info, container, false);
-
-        mMovieTitle = (TextView) rootView.findViewById(R.id.movie_info_title);
-
-        mMoviePoster = (ImageView) rootView.findViewById(R.id.movie_info_poster);
-
-        mMovieOverview = (TextView) rootView.findViewById(R.id.movie_info_overview);
-
-        mMovieRating = (TextView) rootView.findViewById(R.id.movie_info_rating);
-
-        mMoviePopularity = (TextView) rootView.findViewById(R.id.movie_info_popularity);
-
-        mMovieReleaseDate = (TextView) rootView.findViewById(R.id.movie_release_date);
+        unbinder = ButterKnife.bind(this, rootView);
 
         /*
          * Get the intent which started this activity
@@ -101,4 +101,9 @@ public class MovieInfoFragment extends Fragment {
 
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
+    }
 }

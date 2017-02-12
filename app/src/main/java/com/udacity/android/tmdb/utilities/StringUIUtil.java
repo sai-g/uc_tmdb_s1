@@ -1,12 +1,13 @@
 package com.udacity.android.tmdb.utilities;
 
 import android.content.Context;
-import android.util.Log;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
+import com.udacity.android.tmdb.R;
 
 import java.net.URL;
 import java.text.DecimalFormat;
@@ -56,11 +57,12 @@ public class StringUIUtil {
     public static void setImageResource(Context context, ImageView imageView, URL imageUrl, int[] alternateImageOptions) {
 
         if(imageUrl != null) {
-            // TODO enhancement:add placeholder during image load
-            Picasso.with(context).load(imageUrl.toString()).into(imageView);
+            Picasso.with(context).load(imageUrl.toString())
+                    .placeholder(R.drawable.placeholder)
+                    .error(alternateImageOptions[0])
+                    .into(imageView);
         }
         else {
-            Log.e("<IMAGE NOT FOUND>", context.toString());
             Picasso.with(context).load(alternateImageOptions[0])
                     .resize(alternateImageOptions[1],alternateImageOptions[2]).into(imageView);
         }
@@ -69,4 +71,18 @@ public class StringUIUtil {
     public static boolean isEmpty(String str) {
         return str == null || str.trim().isEmpty();
     }
+
+    /**
+     * To calculate number of columns based on device width
+     * reference : http://stackoverflow.com/questions/33575731/gridlayoutmanager-how-to-auto-fit-columns
+     * @param context
+     * @return
+     */
+    public static int calculateNoOfColumns(Context context) {
+        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+        float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
+        int noOfColumns = (int) (dpWidth / 180);
+        return noOfColumns;
+    }
+
 }
