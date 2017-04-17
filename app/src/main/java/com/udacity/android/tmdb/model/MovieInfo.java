@@ -9,7 +9,7 @@ import android.os.Parcelable;
 
 public class MovieInfo implements Parcelable{
 
-
+    private int id;
     private String title;
     private String originalTitle;
     private float popularity;
@@ -99,6 +99,7 @@ public class MovieInfo implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.id);
         dest.writeString(this.title);
         dest.writeString(this.originalTitle);
         dest.writeFloat(this.popularity);
@@ -114,6 +115,7 @@ public class MovieInfo implements Parcelable{
     }
 
     protected MovieInfo(Parcel in) {
+        this.id = in.readInt();
         this.title = in.readString();
         this.originalTitle = in.readString();
         this.popularity = in.readFloat();
@@ -136,4 +138,12 @@ public class MovieInfo implements Parcelable{
             return new MovieInfo[size];
         }
     };
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 }

@@ -1,11 +1,10 @@
-package com.udacity.android.tmdb.tasks;
+package com.udacity.android.tmdb.loader;
 
-
+import android.content.AsyncTaskLoader;
 import android.content.Context;
-import android.os.AsyncTask;
+import android.os.Bundle;
 import android.util.Log;
 
-import com.udacity.android.tmdb.listener.AsyncTaskCompleteListener;
 import com.udacity.android.tmdb.model.MovieInfo;
 
 import java.util.ArrayList;
@@ -18,33 +17,51 @@ import info.movito.themoviedbapi.model.core.MovieResultsPage;
 import static com.udacity.android.tmdb.adapter.MovieAdapter.MovieAdapterOnClickHandler.TMDB_API;
 
 /**
- * Async task to update movie list upon scrolling or selection
+ * Async loader to update movie list upon scrolling or selection
  */
-public class FetchResultsTask extends AsyncTask<Object, Void, List<MovieInfo>> {
 
-    private Context context;
-    private AsyncTaskCompleteListener asyncTaskCompleteListener;
+public class FetchResultsLoader extends AsyncTaskLoader<List<MovieInfo>> {
 
-    public FetchResultsTask(Context context, AsyncTaskCompleteListener asyncTaskCompleteListener) {
-        this.context = context;
-        this.asyncTaskCompleteListener = asyncTaskCompleteListener;
+    private Bundle mCurrentMovieBundle;
+
+    // variable to cache data
+    private List<MovieInfo> mData;
+
+    public FetchResultsLoader(Context context, Bundle movieBundle) {
+        super(context);
+        this.mCurrentMovieBundle = movieBundle;
     }
 
     @Override
-    protected void onPreExecute() {
-        super.onPreExecute();
+    protected void onStartLoading() {
+        super.onStartLoading();
+        if (mCurrentMovieBundle == null) {
+            return;
+        }
+        // check for cached result, return if exists
+        if (mData != null) {
+            deliverResult(mData);
+        } else {
+            // forces an asynchronous load
+            forceLoad();
+        }
     }
 
     @Override
-    protected List<MovieInfo> doInBackground(Object... params) {
+    public List<MovieInfo> loadInBackground() {
 
+        TmdbMovies.MovieMethod currentMethod = (TmdbMovies.MovieMethod) mCurrentMovieBundle.getSerializable("CURRENT_MOVIE_METHOD");
+        int currentPage = mCurrentMovieBundle.getInt("CURRENT_PAGE");
+
+        if (currentMethod == null) {
+            return null;
+        }
         try {
             TmdbMovies tmdbMovies = TMDB_API.getMovies();
 
             MovieResultsPage movieResultsPage;
 
-            TmdbMovies.MovieMethod currentMovieMethod = (TmdbMovies.MovieMethod) params[0];
-            int currentPage = Integer.parseInt(String.valueOf(params[1]));
+            TmdbMovies.MovieMethod currentMovieMethod = currentMethod;
             if (TmdbMovies.MovieMethod.top_rated == currentMovieMethod) {
                 movieResultsPage = tmdbMovies.getTopRatedMovies(null, currentPage);
             }
@@ -63,14 +80,28 @@ public class FetchResultsTask extends AsyncTask<Object, Void, List<MovieInfo>> {
             // Tried to override onCancelled by catching MovieDbException here, but didn't work since Aysnc task still throw a Throwable
             Log.e("Movie DB Exception", "No Internet Connectivity");
         }
-
         return null;
     }
 
     @Override
-    protected void onPostExecute(List<MovieInfo> movieInfos) {
-        super.onPostExecute(movieInfos);
-        asyncTaskCompleteListener.onTaskComplete(movieInfos);
+    public void deliverResult(List<MovieInfo> data) {
+        mData = data;
+        super.deliverResult(data);
+    }
+
+    /**
+     * handles a request to completely reset the loader
+     * https://developer.android.com/reference/android/content/AsyncTaskLoader.html
+     */
+    @Override
+    protected void onReset() {
+        super.onReset();
+
+        // making sure the loader is stopped
+        onStopLoading();
+
+        // nullify cached data
+        mData = null;
     }
 
     /**

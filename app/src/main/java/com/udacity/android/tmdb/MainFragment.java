@@ -1,8 +1,10 @@
 package com.udacity.android.tmdb;
 
 import android.app.Fragment;
+import android.app.LoaderManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.Loader;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
@@ -15,8 +17,8 @@ import android.widget.TextView;
 
 import com.udacity.android.tmdb.adapter.MovieAdapter;
 import com.udacity.android.tmdb.listener.AsyncTaskCompleteListener;
+import com.udacity.android.tmdb.loader.FetchResultsLoader;
 import com.udacity.android.tmdb.model.MovieInfo;
-import com.udacity.android.tmdb.tasks.FetchResultsTask;
 
 import java.util.List;
 
@@ -25,7 +27,7 @@ import info.movito.themoviedbapi.TmdbMovies;
 import static com.udacity.android.tmdb.utilities.StringUIUtil.calculateNoOfColumns;
 
 
-public class MainFragment extends Fragment implements MovieAdapter.MovieAdapterOnClickHandler{
+public class MainFragment extends Fragment implements MovieAdapter.MovieAdapterOnClickHandler, LoaderManager.LoaderCallbacks<List<MovieInfo>>{
 
     private GridLayoutManager mLayoutManager;
 
@@ -37,6 +39,9 @@ public class MainFragment extends Fragment implements MovieAdapter.MovieAdapterO
 
     private int mCurrentPage;
     private TmdbMovies.MovieMethod mCurrentMovieMethod = TmdbMovies.MovieMethod.now_playing;
+
+    // constant int to uniquely identify the loader
+    private static final int FETCH_RESULTS_LOADER = 100;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -90,8 +95,20 @@ public class MainFragment extends Fragment implements MovieAdapter.MovieAdapterO
 
         mLoadingIndicator.setVisibility(View.VISIBLE);
 
+        // loader takes bundle as input
+        Bundle currentMovieBundle = new Bundle();
+        currentMovieBundle.putSerializable("CURRENT_MOVIE_METHOD", mCurrentMovieMethod);
+        currentMovieBundle.putInt("CURRENT_PAGE", mCurrentPage);
+
+        LoaderManager loaderManager = getActivity().getLoaderManager();
+        Loader<List> fetchResultsLoader = loaderManager.getLoader(FETCH_RESULTS_LOADER);
+        if (fetchResultsLoader == null) {
+            loaderManager.initLoader(FETCH_RESULTS_LOADER, currentMovieBundle, this);
+        } else {
+            loaderManager.restartLoader(FETCH_RESULTS_LOADER, currentMovieBundle, this);
+        }
         // passing currentmovie method to get results based on menu selection
-        new FetchResultsTask(this.getContext(), new FetchResultsTaskCompleteListener()).execute(mCurrentMovieMethod, mCurrentPage);
+        // new FetchResultsTask(this.getContext(), new FetchResultsTaskCompleteListener()).execute(mCurrentMovieMethod, mCurrentPage);
     }
 
     /**
@@ -162,6 +179,33 @@ public class MainFragment extends Fragment implements MovieAdapter.MovieAdapterO
 
     private void resetCurrentPage() {
         mCurrentPage = 1;
+    }
+
+    @Override
+    public Loader<List<MovieInfo>> onCreateLoader(int id, final Bundle args) {
+        return new FetchResultsLoader(getActivity(), args);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<List<MovieInfo>> loader, List<MovieInfo> data) {
+        if(data != null) {
+            //increment current page when movies are returned
+            mCurrentPage++;
+            showMovieDbDataView();
+            mMovieAdapter.setMovieData(data);
+        }
+        // clear data in adapter and show error message when there is no response from api
+        else {
+            mMovieAdapter.clearMovieData();
+            showErrorMessageView();
+        }
+
+        mLoadingIndicator.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<List<MovieInfo>> loader) {
+        mMovieAdapter.setMovieData(null);
     }
 
     /**
