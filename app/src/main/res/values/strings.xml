@@ -10,5 +10,6 @@
     <string name="highest_rated">Highest Rated</string>
     <string name="movie_poster">Movie Poster</string>
     <string name="overview">Overview</string>
+    <string name="reviews">Reviews</string>
     <string name="error_message_no_resource">An error has occurred while loading movies. Please try again later</string>
 </resources>

@@ -12,4 +12,5 @@
     <dimen name="rating_padding_top">10dp</dimen>
     <dimen name="rating_padding_bottom">5dp</dimen>
     <dimen name="child_layout_padding">10dp</dimen>
+    <dimen name="text_margin">16dp</dimen>
 </resources>
