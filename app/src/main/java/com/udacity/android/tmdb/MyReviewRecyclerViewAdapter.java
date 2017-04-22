@@ -1,7 +1,6 @@
 package com.udacity.android.tmdb;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +11,7 @@ import com.udacity.android.tmdb.dummy.DummyContent.DummyItem;
 
 import java.util.List;
 
-import info.movito.themoviedbapi.model.MovieDb;
+import info.movito.themoviedbapi.model.Reviews;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link DummyItem} and makes a call to the
@@ -21,12 +20,9 @@ import info.movito.themoviedbapi.model.MovieDb;
  */
 public class MyReviewRecyclerViewAdapter extends RecyclerView.Adapter<MyReviewRecyclerViewAdapter.ViewHolder> {
 
-    private MovieDb mMovieDb;
+    private List<Reviews> mReviews;
 
-    private final List<DummyItem> mValues;
-
-    public MyReviewRecyclerViewAdapter(List<DummyItem> items) {
-        mValues = items;
+    public MyReviewRecyclerViewAdapter() {
     }
 
     @Override
@@ -38,34 +34,21 @@ public class MyReviewRecyclerViewAdapter extends RecyclerView.Adapter<MyReviewRe
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).id);
-        holder.mContentView.setText(mValues.get(position).content);
-
-        holder.mView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d("TESTING", "TESTING");
-            }
-        });
+        holder.mReview = mReviews.get(position);
+        holder.mIdView.setText(mReviews.get(position).getAuthor());
+        holder.mContentView.setText(mReviews.get(position).getContent());
     }
 
     @Override
     public int getItemCount() {
-        return mValues.size();
-    }
-
-    public void setmMovieDb(MovieDb mMovieDb) {
-
-        this.mMovieDb = mMovieDb;
-        notifyDataSetChanged();
+        return mReviews != null ? mReviews.size() : 0;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
         public final TextView mIdView;
         public final TextView mContentView;
-        public DummyItem mItem;
+        public Reviews mReview;
 
         public ViewHolder(View view) {
             super(view);
@@ -80,5 +63,17 @@ public class MyReviewRecyclerViewAdapter extends RecyclerView.Adapter<MyReviewRe
         }
     }
 
+
+    public void setReviews(List<Reviews> reviews) {
+
+        if (mReviews == null) {
+            mReviews = reviews;
+            this.notifyDataSetChanged();
+        }
+        else {
+            mReviews.addAll(reviews);
+            this.notifyItemRangeInserted(mReviews.size(), reviews.size());
+        }
+    }
 
 }

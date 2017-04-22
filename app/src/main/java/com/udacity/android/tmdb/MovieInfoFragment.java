@@ -1,8 +1,10 @@
 package com.udacity.android.tmdb;
 
 import android.app.LoaderManager;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.Loader;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -15,7 +17,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.udacity.android.tmdb.adapter.MovieAdapter;
-import com.udacity.android.tmdb.dummy.DummyContent;
 import com.udacity.android.tmdb.loader.AdditionalMovieInfoLoader;
 import com.udacity.android.tmdb.model.MovieInfo;
 
@@ -28,6 +29,7 @@ import butterknife.Unbinder;
 import info.movito.themoviedbapi.Utils;
 import info.movito.themoviedbapi.model.MovieDb;
 import info.movito.themoviedbapi.model.Reviews;
+import info.movito.themoviedbapi.model.Video;
 
 import static com.udacity.android.tmdb.utilities.StringUIUtil.DECIMAL_FORMAT;
 import static com.udacity.android.tmdb.utilities.StringUIUtil.getFinalString;
@@ -37,7 +39,7 @@ import static com.udacity.android.tmdb.utilities.StringUIUtil.setImageResource;
 import static com.udacity.android.tmdb.utilities.StringUIUtil.setStringResource;
 
 
-public class MovieInfoFragment extends Fragment implements LoaderManager.LoaderCallbacks<MovieDb>{
+public class MovieInfoFragment extends Fragment implements LoaderManager.LoaderCallbacks<MovieDb>, TrailerFragment.OnListFragmentInteractionListener{
 
     @BindView(R.id.movie_info_title)
     TextView mMovieTitle;
@@ -56,9 +58,12 @@ public class MovieInfoFragment extends Fragment implements LoaderManager.LoaderC
     TextView mMovieInfoOverviewTitle;
 
     private RecyclerView mReviewsRecyclerView;
+    private RecyclerView mTrailerRecyclerView;
+
     private Unbinder unbinder;
 
     private MyReviewRecyclerViewAdapter mReviewsAdapter;
+    private MyTrailerRecyclerViewAdapter mTrailersAdapter;
 
     private final static int ADDITIONAL_MOVIE_INFO_LOADER = 111;
 
@@ -69,7 +74,6 @@ public class MovieInfoFragment extends Fragment implements LoaderManager.LoaderC
         View rootView = inflater.inflate(R.layout.fragment_movie_info, container, false);
         unbinder = ButterKnife.bind(this, rootView);
 
-        mReviewsAdapter = new MyReviewRecyclerViewAdapter(DummyContent.ITEMS);
         /*
          * Get the intent which started this activity
          */
@@ -88,16 +92,23 @@ public class MovieInfoFragment extends Fragment implements LoaderManager.LoaderC
 
             Bundle movieBundle = new Bundle();
             movieBundle.putInt("MOVIE_ID", movieInfo.getId());
+
             LoaderManager loaderManager = getActivity().getLoaderManager();
             Loader<List> movieInfoLoader = loaderManager.getLoader(ADDITIONAL_MOVIE_INFO_LOADER);
+
             if (movieInfoLoader == null) {
                 loaderManager.initLoader(ADDITIONAL_MOVIE_INFO_LOADER, movieBundle, this);
             } else {
                 loaderManager.restartLoader(ADDITIONAL_MOVIE_INFO_LOADER, movieBundle, this);
             }
 
-            mReviewsRecyclerView = (RecyclerView) rootView.findViewById(R.id.list_new);
+            mReviewsAdapter = new MyReviewRecyclerViewAdapter();
+            mReviewsRecyclerView = (RecyclerView) rootView.findViewById(R.id.review_list);
             mReviewsRecyclerView.setAdapter(mReviewsAdapter);
+
+            mTrailersAdapter = new MyTrailerRecyclerViewAdapter(this);
+            mTrailerRecyclerView = (RecyclerView) rootView.findViewById(R.id.trailer_list);
+            mTrailerRecyclerView.setAdapter(mTrailersAdapter);
 
         }
 
@@ -127,6 +138,20 @@ public class MovieInfoFragment extends Fragment implements LoaderManager.LoaderC
             for (Reviews reviews : data.getReviews()) {
                 //mMovieReviewText.setText(reviews.getContent());
                 //mMovieReviews.addView(mMovieReviewText);
+            }
+
+            // reviews section
+            if (data.getReviews() != null && data.getReviews().size() > 0) {
+                mReviewsAdapter.setReviews(data.getReviews());
+            }
+
+            // trailers section
+            if (data.getVideos() != null && data.getVideos().size() > 0) {
+                for (Video video : data.getVideos()) {
+                    if ("YouTube".equals(video.getSite()) && "Trailer".equals(video.getType())) {
+                        mTrailersAdapter.setVideo(video);
+                    }
+                }
             }
 
             // set textview with string formatted from strings xml
@@ -163,5 +188,25 @@ public class MovieInfoFragment extends Fragment implements LoaderManager.LoaderC
     @Override
     public void onLoaderReset(Loader<MovieDb> loader) {
 
+    }
+
+    /**
+     * to open video link in youtube
+     * @param item
+     */
+    @Override
+    public void onListFragmentInteraction(Video item) {
+
+        String key = item.getKey();
+        Intent appIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + key));
+        Intent webIntent = new Intent(Intent.ACTION_VIEW,
+                Uri.parse("http://www.youtube.com/watch?v=" + key));
+        try {
+            // try to open video in youtube app
+            startActivity(appIntent);
+        } catch (ActivityNotFoundException ex) {
+            // when youtube app not found, open browser
+            startActivity(webIntent);
+        }
     }
 }
