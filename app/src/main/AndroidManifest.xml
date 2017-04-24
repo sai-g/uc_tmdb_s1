@@ -10,9 +10,14 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <!-- launchmode as single top to retain the state of the main fragment(stop creating fragment everytime)
-                https://developer.android.com/guide/topics/manifest/activity-element.html#lmode -->
-        <activity android:name="com.udacity.android.tmdb.MainActivity" android:launchMode="singleTop">
+
+        <!--
+             launchmode as single top to retain the state of the main fragment(stop creating fragment everytime)
+                https://developer.android.com/guide/topics/manifest/activity-element.html#lmode
+        -->
+        <activity
+            android:name=".MainActivity"
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -21,11 +26,17 @@
         </activity>
 
         <!-- Child activity to display Movie information -->
-        <activity android:name="com.udacity.android.tmdb.MovieInfoActivity"
+        <activity
+            android:name=".MovieInfoActivity"
             android:label="Movie Info"
-            android:parentActivityName="com.udacity.android.tmdb.MainActivity">
+            android:parentActivityName=".MainActivity"></activity>
 
-        </activity>
+        <!-- Registering content provider -->
+        <provider
+            android:name=".contentprovider.FavoritesContentProvider"
+            android:authorities="com.udacity.android.tmdb.favorites"
+            android:enabled="true"
+            android:exported="true"></provider>
     </application>
 
 </manifest>
