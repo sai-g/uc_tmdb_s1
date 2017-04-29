@@ -33,38 +33,43 @@ android {
         exclude 'META-INF/NOTICE.txt'
         exclude 'META-INF/LICENSE.txt'
         exclude 'META-INF/MANIFEST.MF'
+        dependencies {
+            compile fileTree(dir: 'libs', include: ['*.jar'])
+            androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+                exclude group: 'com.android.support', module: 'support-annotations'
+            })
+
+            //compile 'com.android.support:support-v4:25.1.1'
+            compile 'com.android.support:appcompat-v7:25.1.1'
+            compile 'com.android.support:recyclerview-v7:25.1.1'
+            compile 'com.android.support:support-core-utils:25.1.1'
+            compile 'com.android.support:support-v4:25.1.1'
+
+            //Adding TheMovieDB API to simplify ReST call and receive response
+            compile 'info.movito:themoviedbapi:1.4'
+
+            // Picasso api to load and cache images
+            compile 'com.squareup.picasso:picasso:2.5.2'
+
+            // library to reduce boilerplate code
+
+            compile 'com.jakewharton:butterknife:8.4.0'
+            apt 'com.jakewharton:butterknife-compiler:8.4.0'
+
+
+            // memory leak
+
+
+            // favorite button https://github.com/IvBaranov/MaterialFavoriteButton
+            compile 'com.github.ivbaranov:materialfavoritebutton:0.1.4'
+
+
+            testCompile 'junit:junit:4.12'
+            testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
+            apt 'com.jakewharton:butterknife-compiler:8.4.0'
+            debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5'
+            releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
+        }
     }
 }
 
-dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
-
-    //compile 'com.android.support:support-v4:25.1.1'
-    compile 'com.android.support:appcompat-v7:25.1.1'
-    compile 'com.android.support:recyclerview-v7:25.1.1'
-    compile 'com.android.support:support-core-utils:25.1.1'
-    compile 'com.android.support:support-v4:25.1.1'
-
-    //Adding TheMovieDB API to simplify ReST call and receive response
-    compile 'info.movito:themoviedbapi:1.4'
-
-    // Picasso api to load and cache images
-    compile 'com.squareup.picasso:picasso:2.5.2'
-
-    // library to reduce boilerplate code
-    
-    
-    // memory leak
-
-    compile 'com.jakewharton:butterknife:8.4.0'
-    apt 'com.jakewharton:butterknife-compiler:8.4.0'
-
-    testCompile 'junit:junit:4.12'
-    testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
-    apt 'com.jakewharton:butterknife-compiler:8.4.0'
-    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5'
-    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
-}

@@ -5,9 +5,12 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 
 import com.udacity.android.tmdb.data.FavoritesDbHelper;
+import com.udacity.android.tmdb.data.FavoritesTable;
 
 public class FavoritesContentProvider extends ContentProvider {
 
@@ -41,9 +44,48 @@ public class FavoritesContentProvider extends ContentProvider {
     }
 
     @Override
+    public Cursor query(Uri uri, String[] projection, String selection,
+                        String[] selectionArgs, String sortOrder) {
+        // TODO: Implement this to handle query requests from clients.
+        // using query builder to create sql query
+        SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
+
+        // validate all columns
+
+        queryBuilder.setTables(FavoritesTable.TABLE_NAME);
+
+        int uriTypes = URI_MATCHER.match(uri);
+        switch (uriTypes) {
+            case FAVORITES_ID:
+                // add details for all columns
+                queryBuilder.appendWhere(FavoritesTable.COLUMN_ID + "=" +uri.getLastPathSegment());
+                break;
+            default:
+                throw new IllegalArgumentException("Unknown URI : "+ uri);
+        }
+
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+
+        Cursor cursor = queryBuilder.query(database, projection, selection, selectionArgs, null, null, sortOrder);
+        return cursor;
+
+    }
+
+    @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
-        // Implement this to handle requests to delete one or more rows.
-        throw new UnsupportedOperationException("Not yet implemented");
+        // to handle requests to delete one or more rows.
+        int uriType = URI_MATCHER.match(uri);
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+        int id = 0;
+        switch (uriType) {
+            case FAVORITES_ID:
+                id = database.delete(FavoritesTable.TABLE_NAME, selection, selectionArgs);
+                break;
+            default:
+                throw new IllegalArgumentException("Unknown URI: " + uri);
+        }
+
+        return id;
     }
 
     @Override
@@ -56,15 +98,20 @@ public class FavoritesContentProvider extends ContentProvider {
     @Override
     public Uri insert(Uri uri, ContentValues values) {
         // to handle requests to insert a new row.
+        int uriType = URI_MATCHER.match(uri);
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+        long id = 0;
+        switch (uriType) {
+            case FAVORITES_ID:
+                id = database.insert(FavoritesTable.TABLE_NAME, null, values);
+                break;
+            default:
+                throw new IllegalArgumentException("Unknown URI: " + uri);
+        }
 
-        throw new UnsupportedOperationException("Not yet implemented");
-    }
+        getContext().getContentResolver().notifyChange(uri, null);
 
-    @Override
-    public Cursor query(Uri uri, String[] projection, String selection,
-                        String[] selectionArgs, String sortOrder) {
-        // TODO: Implement this to handle query requests from clients.
-        throw new UnsupportedOperationException("Not yet implemented");
+        return Uri.parse(BASE_PATH + "/" + id);
     }
 
     @Override

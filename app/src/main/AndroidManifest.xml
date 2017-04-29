@@ -34,7 +34,7 @@
         <!-- Registering content provider -->
         <provider
             android:name=".contentprovider.FavoritesContentProvider"
-            android:authorities="com.udacity.android.tmdb.favorites"
+            android:authorities="com.udacity.android.tmdb.contentprovider"
             android:enabled="true"
             android:exported="true"></provider>
     </application>

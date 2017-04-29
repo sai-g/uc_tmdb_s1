@@ -2,6 +2,7 @@ package com.udacity.android.tmdb;
 
 import android.app.LoaderManager;
 import android.content.ActivityNotFoundException;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.Loader;
 import android.net.Uri;
@@ -15,8 +16,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.github.ivbaranov.mfb.MaterialFavoriteButton;
 import com.udacity.android.tmdb.adapter.MovieAdapter;
+import com.udacity.android.tmdb.contentprovider.FavoritesContentProvider;
+import com.udacity.android.tmdb.data.FavoritesTable;
 import com.udacity.android.tmdb.loader.AdditionalMovieInfoLoader;
 import com.udacity.android.tmdb.model.MovieInfo;
 
@@ -53,6 +58,9 @@ public class MovieInfoFragment extends Fragment implements LoaderManager.LoaderC
     TextView mMoviePopularity;
     @BindView(R.id.movie_release_date)
     TextView mMovieReleaseDate;
+
+    @BindView(R.id.favorite_button)
+    MaterialFavoriteButton mFavoriteButton;
 
     @BindView(R.id.movie_info_overview_title)
     TextView mMovieInfoOverviewTitle;
@@ -154,18 +162,40 @@ public class MovieInfoFragment extends Fragment implements LoaderManager.LoaderC
                 }
             }
 
+            // set movie id
+            // set tag
+            mMovieTitle.setTag(data.getId());
+
             // set textview with string formatted from strings xml
             setStringResource(mMovieTitle, R.string.movie_title, data.getOriginalTitle(), data.getReleaseDate().split("-")[0]);
 
 
             // movie user rating
+            mMovieRating.setTag(data.getVoteAverage());
             setStringResource(mMovieRating, R.string.movie_user_rating, DECIMAL_FORMAT.format(data.getVoteAverage()));
 
             // movie popularity
+            mMoviePopularity.setTag(data.getPopularity());
             setStringResource(mMoviePopularity, R.string.movie_popularity, DECIMAL_FORMAT.format(data.getPopularity()));
 
             // set movie release date
+            mMovieReleaseDate.setTag(data.getReleaseDate());
             setStringResource(mMovieReleaseDate, R.string.movie_release_date, getFriendlyDateString(data.getReleaseDate()));
+
+            // state of the favorite button
+            mFavoriteButton.setOnFavoriteChangeListener(new MaterialFavoriteButton.OnFavoriteChangeListener() {
+                @Override
+                public void onFavoriteChanged(MaterialFavoriteButton buttonView, boolean favorite) {
+                    if (favorite) {
+                        saveFavorite();
+                        Toast.makeText(buttonView.getContext(), "Marked as Favorite", Toast.LENGTH_LONG).show();
+                    }
+                    else {
+                        deleteFavorite();
+                        Toast.makeText(buttonView.getContext(), "Removed from Favorites", Toast.LENGTH_LONG).show();
+                    }
+                }
+            });
 
             // set overview text
             if (!isEmpty(data.getOverview())) {
@@ -208,5 +238,37 @@ public class MovieInfoFragment extends Fragment implements LoaderManager.LoaderC
             // when youtube app not found, open browser
             startActivity(webIntent);
         }
+    }
+
+    // private Uri favoritesUri;
+
+    private void saveFavorite() {
+
+        int movieId = (int) mMovieTitle.getTag();
+        String movieTitle = mMovieTitle.getText().toString();
+        String releaseDate = (String) mMovieReleaseDate.getTag();
+        String userRating = Float.toString((Float) mMovieRating.getTag());
+        String popularity = Float.toString((Float) mMoviePopularity.getTag());
+
+        ContentValues values = new ContentValues();
+        values.put(FavoritesTable.COLUMN_ID, movieId);
+        values.put(FavoritesTable.COLUMN_MOVIE_TITLE, movieTitle);
+        values.put(FavoritesTable.COLUMN_MOVIE_YEAR, releaseDate);
+        values.put(FavoritesTable.COLUMN_USER_RATING, userRating);
+        values.put(FavoritesTable.COLUMN_POPULARITY, popularity);
+
+        getContext().getContentResolver().insert(FavoritesContentProvider.CONTENT_URI, values);
+    }
+
+    private void deleteFavorite() {
+
+        int movieId = (int) mMovieTitle.getTag();
+
+        // where part of query
+        String selection = FavoritesTable.COLUMN_ID + " LIKE ?";
+        // values in placeholder
+        String[] selectionArgs = {String.valueOf(movieId)};
+
+        getContext().getContentResolver().delete(FavoritesContentProvider.CONTENT_URI, selection, selectionArgs);
     }
 }
