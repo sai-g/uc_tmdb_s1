@@ -12,5 +12,9 @@
         android:id="@+id/sort_highest_rated"
         app:showAsAction="never"
         android:orderInCategory="2"/>
+    <item android:title="@string/favorites"
+        android:id="@+id/view_favorites"
+        app:showAsAction="never"
+        android:orderInCategory="3" />
 
 </menu>

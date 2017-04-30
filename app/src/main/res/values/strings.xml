@@ -12,4 +12,8 @@
     <string name="overview">Overview</string>
     <string name="reviews">Reviews</string>
     <string name="error_message_no_resource">An error has occurred while loading movies. Please try again later</string>
+    <string name="favorites">Favorites</string>
+    <string name="trailers">Trailers</string>
+    <string name="no_reviews_available_yet">No reviews available yet</string>
+    <string name="no_trailers_available_yet">No Trailers available yet</string>
 </resources>

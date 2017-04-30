@@ -6,8 +6,10 @@
     android:name="com.udacity.android.tmdb.TrailerFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="16dp"
-    android:layout_marginRight="16dp"
     app:layoutManager="LinearLayoutManager"
     tools:context="com.udacity.android.tmdb.TrailerFragment"
-    tools:listitem="@layout/fragment_trailer" />
+    tools:listitem="@layout/fragment_trailer" >
+
+
+
+    </android.support.v7.widget.RecyclerView>

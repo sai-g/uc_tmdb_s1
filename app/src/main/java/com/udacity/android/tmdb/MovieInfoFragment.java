@@ -59,11 +59,13 @@ public class MovieInfoFragment extends Fragment implements LoaderManager.LoaderC
     @BindView(R.id.movie_release_date)
     TextView mMovieReleaseDate;
 
+    @BindView(R.id.reviews_not_available)
+    TextView mReviewsNotAvailable;
+    @BindView(R.id.trailers_not_available)
+    TextView mTrailersNotAvailable;
+
     @BindView(R.id.favorite_button)
     MaterialFavoriteButton mFavoriteButton;
-
-    @BindView(R.id.movie_info_overview_title)
-    TextView mMovieInfoOverviewTitle;
 
     private RecyclerView mReviewsRecyclerView;
     private RecyclerView mTrailerRecyclerView;
@@ -151,6 +153,9 @@ public class MovieInfoFragment extends Fragment implements LoaderManager.LoaderC
             // reviews section
             if (data.getReviews() != null && data.getReviews().size() > 0) {
                 mReviewsAdapter.setReviews(data.getReviews());
+            } else {
+                // show no reviews available text
+                mReviewsNotAvailable.setVisibility(View.VISIBLE);
             }
 
             // trailers section
@@ -160,6 +165,8 @@ public class MovieInfoFragment extends Fragment implements LoaderManager.LoaderC
                         mTrailersAdapter.setVideo(video);
                     }
                 }
+            } else {
+                mTrailersNotAvailable.setVisibility(View.VISIBLE);
             }
 
             // set movie id
@@ -201,7 +208,7 @@ public class MovieInfoFragment extends Fragment implements LoaderManager.LoaderC
             if (!isEmpty(data.getOverview())) {
                 // show overview label/title when overview text exists
 
-                mMovieInfoOverviewTitle.setVisibility(View.VISIBLE);
+                // mMovieInfoOverviewTitle.setVisibility(View.VISIBLE);
                 String overviewTxt = getFinalString(mMovieOverview, R.string.movie_info_overview, data.getOverview());
                 mMovieOverview.setText(Html.fromHtml(overviewTxt));
             }

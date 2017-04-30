@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
 
         MainFragment mainFragment = (MainFragment) getFragmentManager().findFragmentById(R.id.fragment);
 
-        // Now prepare menu item to take actions
+        // Now prepare menu item to take actions899
         // Here, menu item can do sorting based on most popular movies or highest rated movies
         switch (item.getItemId()) {
             case R.id.sort_highest_rated:
@@ -35,6 +35,10 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.sort_most_popular:
                 mainFragment.resetMovieMethod(TmdbMovies.MovieMethod.popular);
+                break;
+            case R.id.view_favorites:
+                // null is passed to handle favorites movie
+                mainFragment.resetMovieMethod(null);
                 break;
             default:
                 mainFragment.resetMovieMethod(TmdbMovies.MovieMethod.now_playing);

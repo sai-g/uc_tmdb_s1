@@ -5,16 +5,6 @@
     android:orientation="vertical">
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="@dimen/sub_heading"
-        android:text="@string/reviews"
-        android:id="@+id/movie_info_reviews_title"
-        android:visibility="visible"
-        android:textStyle="bold"
-        android:paddingTop="@dimen/overview_heading_padding_top"/>
-
-    <TextView
         android:id="@+id/id"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

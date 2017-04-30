@@ -39,8 +39,9 @@ public class MyTrailerRecyclerViewAdapter extends RecyclerView.Adapter<MyTrailer
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mVideo = mVideos.get(position);
-        holder.mIdView.setText(mVideos.get(position).getType());
-        holder.mContentView.setText(mVideos.get(position).getKey());
+        // holder.mIdView.setText(mVideos.get(position).getType());
+        // holder.mContentView.setText(mVideos.get(position).getKey());
+        holder.mContentView.setText(mVideos.get(position).getType() + " " +(position+1));
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override

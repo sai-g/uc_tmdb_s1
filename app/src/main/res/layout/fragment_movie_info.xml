@@ -8,13 +8,21 @@
         android:id="@+id/activity_movie_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/activity_vertical_margin"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin"
         tools:context=".MovieInfoActivity$MovieInfoFragment"
         android:orientation="vertical"
         >
+
+        <TextView
+            android:id="@+id/movie_info_title"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_gravity="start"
+            android:layout_weight="1"
+            android:background="@color/primary"
+            android:gravity="start"
+            android:textSize="@dimen/main_heading_size"
+            android:textStyle="bold"
+            />
 
 
         <LinearLayout
@@ -38,12 +46,6 @@
                 android:orientation="vertical"
                 android:paddingStart="@dimen/child_layout_padding"
                 android:paddingEnd="@dimen/child_layout_padding">
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/movie_info_title"
-                    android:textSize="@dimen/main_heading_size"
-                    android:textStyle="bold"/>
 
                 <TextView
                     android:layout_width="match_parent"
@@ -91,7 +93,7 @@
 
         </LinearLayout>
 
-        <TextView
+        <!--<TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/sub_heading"
@@ -99,7 +101,7 @@
             android:id="@+id/movie_info_overview_title"
             android:visibility="gone"
             android:textStyle="bold"
-            android:paddingTop="@dimen/overview_heading_padding_top"/>
+            android:paddingTop="@dimen/overview_heading_padding_top"/>-->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -129,6 +131,31 @@
 
         </LinearLayout>-->
 
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="2dp"
+            android:background="#c0c0c0"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/sub_heading"
+            android:text="@string/trailers"
+            android:id="@+id/trailer_list_title"
+            android:visibility="visible"
+            android:textStyle="bold"
+            android:paddingTop="@dimen/overview_heading_padding_top"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/sub_heading"
+            android:text="@string/no_trailers_available_yet"
+            android:id="@+id/trailers_not_available"
+            android:visibility="gone"
+            android:textStyle="normal"
+            android:paddingTop="@dimen/overview_heading_padding_top"/>
+
         <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:app="http://schemas.android.com/apk/res-auto"
             xmlns:tools="http://schemas.android.com/tools"
@@ -138,6 +165,31 @@
             android:layout_height="match_parent"
             app:layoutManager="LinearLayoutManager"
             />
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="2dp"
+            android:background="#c0c0c0"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/sub_heading"
+            android:text="@string/reviews"
+            android:id="@+id/movie_info_reviews_title"
+            android:visibility="visible"
+            android:textStyle="bold"
+            android:paddingTop="@dimen/overview_heading_padding_top"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/sub_heading"
+            android:text="@string/no_reviews_available_yet"
+            android:id="@+id/reviews_not_available"
+            android:visibility="gone"
+            android:textStyle="normal"
+            android:paddingTop="@dimen/overview_heading_padding_top"/>
 
         <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:app="http://schemas.android.com/apk/res-auto"
