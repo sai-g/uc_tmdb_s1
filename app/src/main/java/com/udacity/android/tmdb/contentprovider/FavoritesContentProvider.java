@@ -33,7 +33,7 @@ public class FavoritesContentProvider extends ContentProvider {
 
     static {
         URI_MATCHER.addURI(AUTHORITY, BASE_PATH, FAVORITES);
-        URI_MATCHER.addURI(AUTHORITY, BASE_PATH, FAVORITES_ID);
+        URI_MATCHER.addURI(AUTHORITY, BASE_PATH + "/#", FAVORITES_ID);
     }
 
     @Override
@@ -56,6 +56,9 @@ public class FavoritesContentProvider extends ContentProvider {
 
         int uriTypes = URI_MATCHER.match(uri);
         switch (uriTypes) {
+            case FAVORITES:
+                // to select everything from database
+                break;
             case FAVORITES_ID:
                 // add details for all columns
                 queryBuilder.appendWhere(FavoritesTable.COLUMN_ID + "=" +uri.getLastPathSegment());
@@ -64,7 +67,7 @@ public class FavoritesContentProvider extends ContentProvider {
                 throw new IllegalArgumentException("Unknown URI : "+ uri);
         }
 
-        SQLiteDatabase database = dbHelper.getWritableDatabase();
+        SQLiteDatabase database = dbHelper.getReadableDatabase();
 
         Cursor cursor = queryBuilder.query(database, projection, selection, selectionArgs, null, null, sortOrder);
         return cursor;

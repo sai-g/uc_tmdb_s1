@@ -5,6 +5,7 @@ import android.content.ActivityNotFoundException;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.Loader;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -189,6 +190,8 @@ public class MovieInfoFragment extends Fragment implements LoaderManager.LoaderC
             mMovieReleaseDate.setTag(data.getReleaseDate());
             setStringResource(mMovieReleaseDate, R.string.movie_release_date, getFriendlyDateString(data.getReleaseDate()));
 
+            setFavoriteButtonStatus();
+
             // state of the favorite button
             mFavoriteButton.setOnFavoriteChangeListener(new MaterialFavoriteButton.OnFavoriteChangeListener() {
                 @Override
@@ -247,6 +250,23 @@ public class MovieInfoFragment extends Fragment implements LoaderManager.LoaderC
         }
     }
 
+    private void setFavoriteButtonStatus() {
+        int movieId = (int) mMovieTitle.getTag();
+        ContentValues values = new ContentValues();
+        values.put(FavoritesTable.COLUMN_ID, movieId);
+
+        // String selection = FavoritesTable.COLUMN_ID + " LIKE ?";
+        String[] selectionArgs = {String.valueOf(movieId)};
+
+        Uri queryUri = Uri.parse(FavoritesContentProvider.CONTENT_URI + "/" + movieId);
+
+        Cursor cursor = getContext().getContentResolver().query(queryUri, null, null, null, null);
+        while (cursor.moveToNext()) {
+            if (movieId == cursor.getInt(0)) {
+                mFavoriteButton.toggleFavorite();
+            }
+        }
+    }
     // private Uri favoritesUri;
 
     private void saveFavorite() {
@@ -264,7 +284,8 @@ public class MovieInfoFragment extends Fragment implements LoaderManager.LoaderC
         values.put(FavoritesTable.COLUMN_USER_RATING, userRating);
         values.put(FavoritesTable.COLUMN_POPULARITY, popularity);
 
-        getContext().getContentResolver().insert(FavoritesContentProvider.CONTENT_URI, values);
+        Uri saveUri = Uri.parse(FavoritesContentProvider.CONTENT_URI + "/" + movieId);
+        getContext().getContentResolver().insert(saveUri, values);
     }
 
     private void deleteFavorite() {
@@ -276,6 +297,7 @@ public class MovieInfoFragment extends Fragment implements LoaderManager.LoaderC
         // values in placeholder
         String[] selectionArgs = {String.valueOf(movieId)};
 
-        getContext().getContentResolver().delete(FavoritesContentProvider.CONTENT_URI, selection, selectionArgs);
+        Uri deleteUri = Uri.parse(FavoritesContentProvider.CONTENT_URI + "/" + movieId);
+        getContext().getContentResolver().delete(deleteUri, selection, selectionArgs);
     }
 }
