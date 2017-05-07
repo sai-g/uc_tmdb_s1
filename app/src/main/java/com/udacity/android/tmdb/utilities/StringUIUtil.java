@@ -6,7 +6,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
 import com.udacity.android.tmdb.R;
 
 import java.net.URL;
@@ -14,6 +13,8 @@ import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import static com.squareup.picasso.Picasso.with;
 
 /**
  * Created by sai_g on 2/5/17.
@@ -57,13 +58,17 @@ public class StringUIUtil {
     public static void setImageResource(Context context, ImageView imageView, URL imageUrl, int[] alternateImageOptions) {
 
         if(imageUrl != null) {
-            Picasso.with(context).load(imageUrl.toString())
+            // enabling picasso logs to check cache status, whether image loaded from network, disk or memory
+            /*Picasso picasso = with(context);
+            picasso.setIndicatorsEnabled(true);
+            picasso.setLoggingEnabled(true);*/
+            with(context).load(imageUrl.toString())
                     .placeholder(R.drawable.placeholder)
                     .error(alternateImageOptions[0])
                     .into(imageView);
         }
         else {
-            Picasso.with(context).load(alternateImageOptions[0])
+            with(context).load(alternateImageOptions[0])
                     .resize(alternateImageOptions[1],alternateImageOptions[2]).into(imageView);
         }
     }

@@ -218,6 +218,9 @@ public class MovieInfoFragment extends Fragment implements LoaderManager.LoaderC
 
             // Set image to ImageView
             URL imageUrl = Utils.createImageUrl(MovieAdapter.MovieAdapterOnClickHandler.TMDB_API, data.getPosterPath(), getResources().getString(R.string.movie_info_image_size));
+            // store image url as tag, it is stored in db
+            if (imageUrl != null)
+                mMoviePoster.setTag(imageUrl.toString());
             // Alternate image will be shown when movie poster image not present
             int[] alternateImageOptions = {R.drawable.image_not_found, getResources().getInteger(R.integer.alt_info_image_width), getResources().getInteger(R.integer.alt_info_image_height)};
             setImageResource(getActivity(), mMoviePoster, imageUrl, alternateImageOptions);
@@ -276,6 +279,7 @@ public class MovieInfoFragment extends Fragment implements LoaderManager.LoaderC
         String releaseDate = (String) mMovieReleaseDate.getTag();
         String userRating = Float.toString((Float) mMovieRating.getTag());
         String popularity = Float.toString((Float) mMoviePopularity.getTag());
+        String imagePath = (String) mMoviePoster.getTag();
 
         ContentValues values = new ContentValues();
         values.put(FavoritesTable.COLUMN_ID, movieId);
@@ -283,6 +287,7 @@ public class MovieInfoFragment extends Fragment implements LoaderManager.LoaderC
         values.put(FavoritesTable.COLUMN_MOVIE_YEAR, releaseDate);
         values.put(FavoritesTable.COLUMN_USER_RATING, userRating);
         values.put(FavoritesTable.COLUMN_POPULARITY, popularity);
+        values.put(FavoritesTable.COLUMN_POSTERPATH, imagePath);
 
         Uri saveUri = Uri.parse(FavoritesContentProvider.CONTENT_URI + "/" + movieId);
         getContext().getContentResolver().insert(saveUri, values);

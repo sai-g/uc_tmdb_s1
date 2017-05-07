@@ -17,6 +17,7 @@ public class FavoritesTable {
     public static final String COLUMN_USER_RATING = "user_rating";
     public static final String COLUMN_POPULARITY = "popularity";
     public static final String COLUMN_OVERVIEW = "overview";
+    public static final String COLUMN_POSTERPATH = "poster_path";
 
     // sql for database creation
     private static final String DATABASE_CREATE = "create table " + TABLE_NAME + "("
@@ -25,7 +26,8 @@ public class FavoritesTable {
             + COLUMN_MOVIE_YEAR + " text not null,"
             + COLUMN_USER_RATING + " text,"
             + COLUMN_POPULARITY + " text,"
-            + COLUMN_OVERVIEW + " text"
+            + COLUMN_OVERVIEW + " text,"
+            + COLUMN_POSTERPATH + " text"
             + ");";
 
     // sql to drop table
