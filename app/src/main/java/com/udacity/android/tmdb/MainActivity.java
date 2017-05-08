@@ -31,17 +31,17 @@ public class MainActivity extends AppCompatActivity {
         // Here, menu item can do sorting based on most popular movies or highest rated movies
         switch (item.getItemId()) {
             case R.id.sort_highest_rated:
-                mainFragment.resetMovieMethod(TmdbMovies.MovieMethod.top_rated);
+                mainFragment.resetMovieMethod(TmdbMovies.MovieMethod.top_rated, false);
                 break;
             case R.id.sort_most_popular:
-                mainFragment.resetMovieMethod(TmdbMovies.MovieMethod.popular);
+                mainFragment.resetMovieMethod(TmdbMovies.MovieMethod.popular, false);
                 break;
             case R.id.view_favorites:
-                // null is passed to handle favorites movie
-                mainFragment.resetMovieMethod(null);
+                // null is passed to handle favorites movie, true for favorite movies from db
+                mainFragment.resetMovieMethod(null, true);
                 break;
             default:
-                mainFragment.resetMovieMethod(TmdbMovies.MovieMethod.now_playing);
+                mainFragment.resetMovieMethod(TmdbMovies.MovieMethod.now_playing, true);
                 break;
         }
         return super.onOptionsItemSelected(item);

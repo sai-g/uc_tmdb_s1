@@ -78,7 +78,7 @@ public class MainFragment extends Fragment implements MovieAdapter.MovieAdapterO
         resetCurrentPage();
 
         // considering default movie method as now playing movies
-        loadMovieDbData();
+        loadMovieDbData(false);
 
         setRecyclerViewScrollListener();
 
@@ -89,7 +89,7 @@ public class MainFragment extends Fragment implements MovieAdapter.MovieAdapterO
 
     }
 
-    private void loadMovieDbData() {
+    private void loadMovieDbData(boolean loadFavorites) {
 
         showMovieDbDataView();
 
@@ -99,6 +99,8 @@ public class MainFragment extends Fragment implements MovieAdapter.MovieAdapterO
         Bundle currentMovieBundle = new Bundle();
         currentMovieBundle.putSerializable("CURRENT_MOVIE_METHOD", mCurrentMovieMethod);
         currentMovieBundle.putInt("CURRENT_PAGE", mCurrentPage);
+        if (loadFavorites)
+            currentMovieBundle.putBoolean("LOAD_FAVORITES", true);
 
         LoaderManager loaderManager = getActivity().getLoaderManager();
         Loader<List> fetchResultsLoader = loaderManager.getLoader(FETCH_RESULTS_LOADER);
@@ -150,7 +152,7 @@ public class MainFragment extends Fragment implements MovieAdapter.MovieAdapterO
 
                 //check to see if we reached current threshold, request more movies when reaching current threshold
                 if(totalMoviesCount == getLastVisibleItemPosition() + 1) {
-                    loadMovieDbData();
+                    loadMovieDbData(false);
                 }
 
             }
@@ -168,13 +170,13 @@ public class MainFragment extends Fragment implements MovieAdapter.MovieAdapterO
         startActivity(startChildActivityIntent);
     }
 
-    public void resetMovieMethod(TmdbMovies.MovieMethod movieMethod) {
+    public void resetMovieMethod(TmdbMovies.MovieMethod movieMethod, boolean loadFavorites) {
         mCurrentMovieMethod = movieMethod;
         // reset page information
         resetCurrentPage();
         mMovieAdapter.clearMovieData();
         // call API to get movies
-        loadMovieDbData();
+        loadMovieDbData(loadFavorites);
     }
 
     private void resetCurrentPage() {

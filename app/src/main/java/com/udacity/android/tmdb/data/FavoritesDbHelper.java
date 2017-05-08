@@ -14,7 +14,7 @@ public class FavoritesDbHelper extends SQLiteOpenHelper{
     private static final String DATABASE_NAME = "favorites.db";
     // database version, whenever there is a change in dbversion(increment or decrement) appropriate helper method will be called
     // increment onUpgrade, decrement onDowngrade
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 4;
 
     public FavoritesDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);

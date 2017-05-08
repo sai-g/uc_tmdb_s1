@@ -2,9 +2,12 @@ package com.udacity.android.tmdb.loader;
 
 import android.content.AsyncTaskLoader;
 import android.content.Context;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.udacity.android.tmdb.contentprovider.FavoritesContentProvider;
 import com.udacity.android.tmdb.model.MovieInfo;
 
 import java.util.ArrayList;
@@ -53,16 +56,22 @@ public class FetchResultsLoader extends AsyncTaskLoader<List<MovieInfo>> {
         TmdbMovies.MovieMethod currentMethod = (TmdbMovies.MovieMethod) mCurrentMovieBundle.getSerializable("CURRENT_MOVIE_METHOD");
         int currentPage = mCurrentMovieBundle.getInt("CURRENT_PAGE");
 
-        if (currentMethod == null) {
-            return null;
-        }
+        boolean loadFavorites = mCurrentMovieBundle.getBoolean("LOAD_FAVORITES");
+
         try {
             TmdbMovies tmdbMovies = TMDB_API.getMovies();
 
-            MovieResultsPage movieResultsPage;
+            MovieResultsPage movieResultsPage = null;
 
             TmdbMovies.MovieMethod currentMovieMethod = currentMethod;
-            if (TmdbMovies.MovieMethod.top_rated == currentMovieMethod) {
+            if (loadFavorites) {
+
+                Uri queryUri = FavoritesContentProvider.CONTENT_URI;
+
+                Cursor cursor = getContext().getContentResolver().query(queryUri, null, null, null, null);
+                return convertDbInfoToMovieInfo(cursor);
+            }
+            else if (TmdbMovies.MovieMethod.top_rated == currentMovieMethod) {
                 movieResultsPage = tmdbMovies.getTopRatedMovies(null, currentPage);
             }
             else if (TmdbMovies.MovieMethod.popular == currentMovieMethod) {
@@ -131,6 +140,26 @@ public class FetchResultsLoader extends AsyncTaskLoader<List<MovieInfo>> {
                 movieInfos.add(movieInfo);
             }
         }
+        return movieInfos;
+    }
+
+    private List<MovieInfo> convertDbInfoToMovieInfo(Cursor cursor) {
+
+        List<MovieInfo> movieInfos = new ArrayList<>(1);
+        while (cursor.moveToNext()) {
+            MovieInfo movieInfo = new MovieInfo();
+            movieInfo.setId(cursor.getInt(0));
+            movieInfo.setTitle(cursor.getString(1));
+            movieInfo.setOriginalTitle(cursor.getString(2));
+            movieInfo.setReleaseDate(cursor.getString(3));
+            movieInfo.setUserRating(cursor.getFloat(4));
+            movieInfo.setPopularity(cursor.getFloat(5));
+            movieInfo.setOverview(cursor.getString(6));
+            movieInfo.setPosterPath(cursor.getString(7));
+
+            movieInfos.add(movieInfo);
+        }
+
         return movieInfos;
     }
 }

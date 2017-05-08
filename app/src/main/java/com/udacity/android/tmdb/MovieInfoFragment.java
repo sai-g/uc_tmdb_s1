@@ -34,10 +34,10 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import info.movito.themoviedbapi.Utils;
 import info.movito.themoviedbapi.model.MovieDb;
-import info.movito.themoviedbapi.model.Reviews;
 import info.movito.themoviedbapi.model.Video;
 
 import static com.udacity.android.tmdb.utilities.StringUIUtil.DECIMAL_FORMAT;
+import static com.udacity.android.tmdb.utilities.StringUIUtil.convertObjToBytes;
 import static com.udacity.android.tmdb.utilities.StringUIUtil.getFinalString;
 import static com.udacity.android.tmdb.utilities.StringUIUtil.getFriendlyDateString;
 import static com.udacity.android.tmdb.utilities.StringUIUtil.isEmpty;
@@ -146,33 +146,30 @@ public class MovieInfoFragment extends Fragment implements LoaderManager.LoaderC
 
         if (data != null) {
 
-            for (Reviews reviews : data.getReviews()) {
-                //mMovieReviewText.setText(reviews.getContent());
-                //mMovieReviews.addView(mMovieReviewText);
-            }
-
             // reviews section
-            if (data.getReviews() != null && data.getReviews().size() > 0) {
+            if (data.getReviews() != null && !data.getReviews().isEmpty()) {
                 mReviewsAdapter.setReviews(data.getReviews());
+                mReviewsNotAvailable.setTag(convertObjToBytes(data.getReviews()));
             } else {
                 // show no reviews available text
                 mReviewsNotAvailable.setVisibility(View.VISIBLE);
             }
 
             // trailers section
-            if (data.getVideos() != null && data.getVideos().size() > 0) {
+            if (data.getVideos() != null && !data.getVideos().isEmpty()) {
                 for (Video video : data.getVideos()) {
                     if ("YouTube".equals(video.getSite()) && "Trailer".equals(video.getType())) {
                         mTrailersAdapter.setVideo(video);
                     }
                 }
+                mTrailersNotAvailable.setTag(convertObjToBytes(data.getVideos()));
             } else {
                 mTrailersNotAvailable.setVisibility(View.VISIBLE);
             }
 
             // set movie id
             // set tag
-            mMovieTitle.setTag(data.getId());
+            mMovieTitle.setTag(data.getId() + "-" + data.getTitle() + "-" + data.getOriginalTitle());
 
             // set textview with string formatted from strings xml
             setStringResource(mMovieTitle, R.string.movie_title, data.getOriginalTitle(), data.getReleaseDate().split("-")[0]);
@@ -254,12 +251,13 @@ public class MovieInfoFragment extends Fragment implements LoaderManager.LoaderC
     }
 
     private void setFavoriteButtonStatus() {
-        int movieId = (int) mMovieTitle.getTag();
+
+        String info = (String) mMovieTitle.getTag();
+        String[] strings = info.split("-");
+
+        int movieId = Integer.parseInt(strings[0]);
         ContentValues values = new ContentValues();
         values.put(FavoritesTable.COLUMN_ID, movieId);
-
-        // String selection = FavoritesTable.COLUMN_ID + " LIKE ?";
-        String[] selectionArgs = {String.valueOf(movieId)};
 
         Uri queryUri = Uri.parse(FavoritesContentProvider.CONTENT_URI + "/" + movieId);
 
@@ -274,20 +272,36 @@ public class MovieInfoFragment extends Fragment implements LoaderManager.LoaderC
 
     private void saveFavorite() {
 
-        int movieId = (int) mMovieTitle.getTag();
-        String movieTitle = mMovieTitle.getText().toString();
+        // extract id, title, original title
+        String info = (String) mMovieTitle.getTag();
+        String[] strings = info.split("-");
+
+        int movieId = Integer.parseInt(strings[0]);
+        String movieTitle = String.valueOf(strings[1]);
+        String originalTitle = mMovieTitle.getText().toString();
         String releaseDate = (String) mMovieReleaseDate.getTag();
         String userRating = Float.toString((Float) mMovieRating.getTag());
         String popularity = Float.toString((Float) mMoviePopularity.getTag());
         String imagePath = (String) mMoviePoster.getTag();
 
+        byte[] reviews = (byte[]) mReviewsNotAvailable.getTag();
+        byte[] trailers = (byte[]) mTrailersNotAvailable.getTag();
+
         ContentValues values = new ContentValues();
         values.put(FavoritesTable.COLUMN_ID, movieId);
         values.put(FavoritesTable.COLUMN_MOVIE_TITLE, movieTitle);
+        values.put(FavoritesTable.COLUMN_MOVIE_ORIGINAL_TITLE, originalTitle);
         values.put(FavoritesTable.COLUMN_MOVIE_YEAR, releaseDate);
         values.put(FavoritesTable.COLUMN_USER_RATING, userRating);
         values.put(FavoritesTable.COLUMN_POPULARITY, popularity);
-        values.put(FavoritesTable.COLUMN_POSTERPATH, imagePath);
+
+        values.put(FavoritesTable.COLUMN_REVIEWS, reviews);
+        values.put(FavoritesTable.COLUMN_VIDEOS, trailers);
+
+        if (imagePath != null) {
+            String[] imagePathArray = imagePath.split("/");
+            values.put(FavoritesTable.COLUMN_POSTERPATH, "/"+imagePathArray[imagePathArray.length-1]);
+        }
 
         Uri saveUri = Uri.parse(FavoritesContentProvider.CONTENT_URI + "/" + movieId);
         getContext().getContentResolver().insert(saveUri, values);

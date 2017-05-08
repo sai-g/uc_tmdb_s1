@@ -6,6 +6,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.squareup.picasso.Picasso;
 import com.udacity.android.tmdb.R;
 
 import java.net.URL;
@@ -59,17 +61,20 @@ public class StringUIUtil {
 
         if(imageUrl != null) {
             // enabling picasso logs to check cache status, whether image loaded from network, disk or memory
-            /*Picasso picasso = with(context);
+            Picasso picasso = Picasso.with(context);
             picasso.setIndicatorsEnabled(true);
-            picasso.setLoggingEnabled(true);*/
-            with(context).load(imageUrl.toString())
+            picasso.setLoggingEnabled(true);
+                    picasso.load(imageUrl.toString())
                     .placeholder(R.drawable.placeholder)
                     .error(alternateImageOptions[0])
+                    .resize(alternateImageOptions[1],alternateImageOptions[2])
+                    .onlyScaleDown() // the image will only be resized if it's bigger than specified wxh pixels.
                     .into(imageView);
         }
         else {
             with(context).load(alternateImageOptions[0])
-                    .resize(alternateImageOptions[1],alternateImageOptions[2]).into(imageView);
+                    .resize(alternateImageOptions[1],alternateImageOptions[2])
+                    .onlyScaleDown().into(imageView);
         }
     }
 
@@ -88,6 +93,11 @@ public class StringUIUtil {
         float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
         int noOfColumns = (int) (dpWidth / 180);
         return noOfColumns;
+    }
+
+    public static byte[] convertObjToBytes(Object object) {
+        Gson gson = new Gson();
+        return gson.toJson(object).getBytes();
     }
 
 }
