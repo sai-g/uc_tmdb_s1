@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -54,7 +55,7 @@ public class MovieInfoFragment extends Fragment implements LoaderManager.LoaderC
     @BindView(R.id.movie_info_overview)
     TextView mMovieOverview;
     @BindView(R.id.movie_info_rating)
-    TextView mMovieRating;
+    RatingBar mMovieRating;
     @BindView(R.id.movie_info_popularity)
     TextView mMoviePopularity;
     @BindView(R.id.movie_release_date)
@@ -177,7 +178,8 @@ public class MovieInfoFragment extends Fragment implements LoaderManager.LoaderC
 
             // movie user rating
             mMovieRating.setTag(data.getVoteAverage());
-            setStringResource(mMovieRating, R.string.movie_user_rating, DECIMAL_FORMAT.format(data.getVoteAverage()));
+            mMovieRating.setRating(data.getVoteAverage()/2);
+            //setStringResource(mMovieRating, R.string.movie_user_rating, DECIMAL_FORMAT.format(data.getVoteAverage()));
 
             // movie popularity
             mMoviePopularity.setTag(data.getPopularity());
