@@ -309,7 +309,11 @@ public class MovieInfoFragment extends Fragment implements LoaderManager.LoaderC
 
     private void deleteFavorite() {
 
-        int movieId = (int) mMovieTitle.getTag();
+        // extract id, title, original title
+        String info = (String) mMovieTitle.getTag();
+        String[] strings = info.split("-");
+
+        int movieId = Integer.parseInt(strings[0]);
 
         // where part of query
         String selection = FavoritesTable.COLUMN_ID + " LIKE ?";
