@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.udacity.android.tmdb.BuildConfig;
 import com.udacity.android.tmdb.R;
@@ -19,7 +18,6 @@ import java.util.List;
 import info.movito.themoviedbapi.TmdbApi;
 import info.movito.themoviedbapi.Utils;
 
-import static com.udacity.android.tmdb.utilities.StringUIUtil.DECIMAL_FORMAT;
 import static com.udacity.android.tmdb.utilities.StringUIUtil.setImageResource;
 
 /**
@@ -84,17 +82,10 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     public class MovieAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         public final ImageView mMoviePoster;
-        public final TextView mMovieTitle;
-        public final TextView mMovieRating;
-        public final TextView mMoviePopularity;
 
         public MovieAdapterViewHolder(View itemView) {
             super(itemView);
-
-            mMovieTitle = (TextView) itemView.findViewById(R.id.movie_title);
             mMoviePoster = (ImageView) itemView.findViewById(R.id.movie_poster);
-            mMovieRating = (TextView) itemView.findViewById(R.id.movie_avg_rating);
-            mMoviePopularity = (TextView) itemView.findViewById(R.id.movie_popularity);
             itemView.setOnClickListener(this);
         }
 
@@ -114,20 +105,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
             int[] alternateImageOptions = {R.drawable.image_not_found, resources.getInteger(R.integer.alt_image_width), resources.getInteger(R.integer.alt_image_height)};
             setImageResource(mMoviePoster.getContext(), mMoviePoster, imageUrl, alternateImageOptions);
             mMoviePoster.setVisibility(View.VISIBLE);
-
-            // Movie Title
-            String movieTitle = mMovieTitle.getResources().getString(R.string.movie_title, movieInfo.getTitle(), movieInfo.getReleaseDate().split("-")[0]);
-            mMovieTitle.setText(movieTitle);
-
-            // Movie popularity
-            String popularity = DECIMAL_FORMAT.format(movieInfo.getPopularity());
-            popularity = mMoviePopularity.getResources().getString(R.string.movie_popularity, popularity);
-            mMoviePopularity.setText(popularity);
-
-            // Movie user rating
-            String avgRating = DECIMAL_FORMAT.format(movieInfo.getVoteAverage());
-            avgRating = mMovieRating.getResources().getString(R.string.movie_user_rating, avgRating);
-            mMovieRating.setText(avgRating);
 
         }
     }

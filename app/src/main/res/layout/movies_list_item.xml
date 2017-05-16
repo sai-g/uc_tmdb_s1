@@ -1,60 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:background="@drawable/customborder"
-    android:layout_marginBottom="5dp"
-    android:layout_marginStart="10dp"
-    android:layout_marginTop="5dp"
-    android:layout_marginEnd="10dp"
-    >
+    android:layout_gravity="center_horizontal">
 
     <!-- Visibility as gone, not to take extra space when image is not loaded or unavailable -->
     <ImageView
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:id="@+id/movie_poster"
-        android:layout_gravity="center|center_horizontal"
         android:contentDescription="@string/movie_poster"
-        android:visibility="invisible"/>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/movie_text_content"
-        android:orientation="vertical"
-        android:gravity="center|center_horizontal"
-        android:paddingTop="@dimen/text_content_padding_top">
-
-        <android.support.v7.widget.AppCompatTextView
-            android:maxLines="2"
-            android:ellipsize="end"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/movie_title"
-            android:textSize="@dimen/sub_heading"
-            android:textStyle="bold"
-            android:text="@string/movie_title"
-            android:textAlignment="center"/>
-
-        <android.support.v7.widget.AppCompatTextView
-            android:maxLines="2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/movie_avg_rating"
-            android:textSize="@dimen/text_content_size"
-            />
-        <android.support.v7.widget.AppCompatTextView
-            android:ellipsize="end"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/movie_popularity"
-            android:textSize="@dimen/text_content_size"
-            />
-    </LinearLayout>
-
+        android:adjustViewBounds="true"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/placeholder"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <!--
         <View
@@ -64,4 +27,4 @@
             />
     -->
 
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>

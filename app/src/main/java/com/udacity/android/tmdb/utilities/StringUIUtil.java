@@ -67,8 +67,6 @@ public class StringUIUtil {
                     picasso.load(imageUrl.toString())
                     .placeholder(R.drawable.placeholder)
                     .error(alternateImageOptions[0])
-                    .resize(alternateImageOptions[1],alternateImageOptions[2])
-                    .onlyScaleDown() // the image will only be resized if it's bigger than specified wxh pixels.
                     .into(imageView);
         }
         else {
