@@ -5,4 +5,5 @@
     android:name="com.udacity.android.tmdb.MovieInfoFragment"
     tools:layout="@layout/fragment_movie_info"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"/>
+    android:layout_height="match_parent"
+    />

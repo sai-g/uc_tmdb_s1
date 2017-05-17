@@ -22,12 +22,27 @@
             app:mfb_animate_favorite="true"
             app:mfb_animate_unfavorite="false"
             app:mfb_bounce_duration="300"
+            app:mfb_favorite_image="@drawable/favorite"
+            app:mfb_not_favorite_image="@drawable/non_favorite"
+            app:mfb_rotation_angle="360"
+            app:mfb_rotation_duration="400"
+            app:mfb_size="48"
+            tools:layout_editor_absoluteX="312dp" />
+        <!--<com.github.ivbaranov.mfb.MaterialFavoriteButton
+            android:id="@+id/favorite_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:mfb_animate_favorite="true"
+            app:mfb_animate_unfavorite="false"
+            app:mfb_bounce_duration="300"
             app:mfb_favorite_image="@android:drawable/btn_star_big_on"
             app:mfb_not_favorite_image="@android:drawable/btn_star_big_off"
             app:mfb_rotation_angle="360"
             app:mfb_rotation_duration="400"
             app:mfb_size="48"
-            tools:layout_editor_absoluteX="312dp" />
+            tools:layout_editor_absoluteX="312dp" />-->
 
         <ImageView
             android:id="@+id/movie_info_poster"
