@@ -147,6 +147,16 @@ public class MovieInfoFragment extends Fragment implements LoaderManager.LoaderC
 
         if (data != null) {
 
+            // Set image to ImageView
+            URL imageUrl = Utils.createImageUrl(MovieAdapter.MovieAdapterOnClickHandler.TMDB_API, data.getPosterPath(), getResources().getString(R.string.movie_info_image_size));
+            // store image url as tag, it is stored in db
+            if (imageUrl != null)
+                mMoviePoster.setTag(imageUrl.toString());
+            // Alternate image will be shown when movie poster image not present
+            int[] alternateImageOptions = {R.drawable.image_not_found, getResources().getInteger(R.integer.alt_info_image_width), getResources().getInteger(R.integer.alt_info_image_height)};
+            setImageResource(getActivity(), mMoviePoster, imageUrl, alternateImageOptions);
+            mMoviePoster.setVisibility(View.VISIBLE);
+
             // reviews section
             if (data.getReviews() != null && !data.getReviews().isEmpty()) {
                 mReviewsAdapter.setReviews(data.getReviews());
@@ -215,15 +225,6 @@ public class MovieInfoFragment extends Fragment implements LoaderManager.LoaderC
                 mMovieOverview.setText(Html.fromHtml(overviewTxt));
             }
 
-            // Set image to ImageView
-            URL imageUrl = Utils.createImageUrl(MovieAdapter.MovieAdapterOnClickHandler.TMDB_API, data.getPosterPath(), getResources().getString(R.string.movie_info_image_size));
-            // store image url as tag, it is stored in db
-            if (imageUrl != null)
-                mMoviePoster.setTag(imageUrl.toString());
-            // Alternate image will be shown when movie poster image not present
-            int[] alternateImageOptions = {R.drawable.image_not_found, getResources().getInteger(R.integer.alt_info_image_width), getResources().getInteger(R.integer.alt_info_image_height)};
-            setImageResource(getActivity(), mMoviePoster, imageUrl, alternateImageOptions);
-            mMoviePoster.setVisibility(View.VISIBLE);
         }
     }
 
