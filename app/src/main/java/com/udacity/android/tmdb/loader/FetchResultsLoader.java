@@ -63,7 +63,6 @@ public class FetchResultsLoader extends AsyncTaskLoader<List<MovieInfo>> {
 
             MovieResultsPage movieResultsPage = null;
 
-            TmdbMovies.MovieMethod currentMovieMethod = currentMethod;
             if (loadFavorites) {
 
                 Uri queryUri = FavoritesContentProvider.CONTENT_URI;
@@ -71,10 +70,10 @@ public class FetchResultsLoader extends AsyncTaskLoader<List<MovieInfo>> {
                 Cursor cursor = getContext().getContentResolver().query(queryUri, null, null, null, null);
                 return convertDbInfoToMovieInfo(cursor);
             }
-            else if (TmdbMovies.MovieMethod.top_rated == currentMovieMethod) {
+            else if (TmdbMovies.MovieMethod.top_rated == currentMethod) {
                 movieResultsPage = tmdbMovies.getTopRatedMovies(null, currentPage);
             }
-            else if (TmdbMovies.MovieMethod.popular == currentMovieMethod) {
+            else if (TmdbMovies.MovieMethod.popular == currentMethod) {
                 movieResultsPage = tmdbMovies.getPopularMovies(null, currentPage);
             }
             else {
@@ -94,8 +93,8 @@ public class FetchResultsLoader extends AsyncTaskLoader<List<MovieInfo>> {
 
     @Override
     public void deliverResult(List<MovieInfo> data) {
-        mData = data;
         super.deliverResult(data);
+        mData = data;
     }
 
     /**

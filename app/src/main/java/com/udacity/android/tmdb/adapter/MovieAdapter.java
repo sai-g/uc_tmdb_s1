@@ -109,6 +109,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
 
     public void setMovieData(List<MovieInfo> movieData) {
 
+        if (movieData == null)
+            return;
         if (mMovieData == null) {
             mMovieData = movieData;
             notifyDataSetChanged();
@@ -128,5 +130,13 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     @Override
     public long getItemId(int position) {
         return position;
+    }
+
+    /**
+     * used by Fragment to store it in Bundle
+     * @return
+     */
+    public List<MovieInfo> getMovieData() {
+        return mMovieData;
     }
 }

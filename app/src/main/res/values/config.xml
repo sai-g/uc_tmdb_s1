@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <item name="grid_image_size" type="string">w342</item>
-    <item name="movie_info_image_size" type="string">w342</item>
+    <item name="grid_image_size" type="string">w500</item>
+    <item name="movie_info_image_size" type="string">w500</item>
     <item name="alt_image_width" type="integer">342</item>
     <item name="alt_image_height" type="integer">513</item>
     <item name="alt_info_image_width" type="integer">342</item>

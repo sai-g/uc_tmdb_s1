@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.Loader;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -20,6 +21,7 @@ import com.udacity.android.tmdb.listener.AsyncTaskCompleteListener;
 import com.udacity.android.tmdb.loader.FetchResultsLoader;
 import com.udacity.android.tmdb.model.MovieInfo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import info.movito.themoviedbapi.TmdbMovies;
@@ -42,6 +44,10 @@ public class MainFragment extends Fragment implements MovieAdapter.MovieAdapterO
 
     // constant int to uniquely identify the loader
     private static final int FETCH_RESULTS_LOADER = 100;
+
+    private static final String SORT_OPTION = "CURRENT_SORT_OPTION";
+    private static final String CURRENT_PAGE = "CURRENT_PAGE_NUMBER";
+    private static final String MOVIES_LIST = "MOVIES_LIST";
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -71,16 +77,29 @@ public class MainFragment extends Fragment implements MovieAdapter.MovieAdapterO
          */
         mMovieAdapter = new MovieAdapter(this);
         mRecyclerView.setAdapter(mMovieAdapter);
+        setRecyclerViewScrollListener();
 
         mLoadingIndicator = (ProgressBar) rootView.findViewById(R.id.movie_loading_indicator);
 
-        // reset current page whenever new layout is created
-        resetCurrentPage();
-
-        // considering default movie method as now playing movies
-        loadMovieDbData(false);
-
-        setRecyclerViewScrollListener();
+        // retrieve movie method from Bundle
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey(SORT_OPTION)) {
+                mCurrentMovieMethod = (TmdbMovies.MovieMethod) savedInstanceState.getSerializable(SORT_OPTION);
+            }
+            if (savedInstanceState.containsKey(CURRENT_PAGE)) {
+                mCurrentPage = savedInstanceState.getInt(CURRENT_PAGE);
+            }
+            if (savedInstanceState.containsKey(MOVIES_LIST)) {
+                List<MovieInfo> movieInfos = savedInstanceState.getParcelableArrayList(MOVIES_LIST);
+                mMovieAdapter.setMovieData(movieInfos);
+            }
+        } else {
+            // mCurrentMovieMethod = TmdbMovies.MovieMethod.now_playing;
+            // reset current page whenever new layout is created
+            resetCurrentPage();
+            // considering default movie method as now playing movies
+            loadMovieDbData(false);
+        }
 
         return rootView;
     }
@@ -109,6 +128,17 @@ public class MainFragment extends Fragment implements MovieAdapter.MovieAdapterO
         } else {
             loaderManager.restartLoader(FETCH_RESULTS_LOADER, currentMovieBundle, this);
         }
+
+        /*final Loader<List> loader = loaderManager.getLoader(FETCH_RESULTS_LOADER);
+        if (loader != null){
+            loaderManager.destroyLoader(FETCH_RESULTS_LOADER);
+        }
+        loaderManager.restartLoader(FETCH_RESULTS_LOADER, currentMovieBundle, this);
+*/
+        /*if (loader != null && loader.isReset()) {
+        } else {
+            loaderManager.initLoader(FETCH_RESULTS_LOADER, currentMovieBundle, this);
+        }*/
         // passing currentmovie method to get results based on menu selection
         // new FetchResultsTask(this.getContext(), new FetchResultsTaskCompleteListener()).execute(mCurrentMovieMethod, mCurrentPage);
     }
@@ -233,4 +263,12 @@ public class MainFragment extends Fragment implements MovieAdapter.MovieAdapterO
         }
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putParcelableArrayList(MOVIES_LIST, (ArrayList<? extends Parcelable>) mMovieAdapter.getMovieData());
+        outState.putSerializable(SORT_OPTION, mCurrentMovieMethod);
+        outState.putInt(CURRENT_PAGE, mCurrentPage);
+    }
 }
