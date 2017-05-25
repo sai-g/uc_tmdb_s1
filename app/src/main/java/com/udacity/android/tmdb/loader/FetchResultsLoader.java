@@ -18,6 +18,8 @@ import info.movito.themoviedbapi.model.MovieDb;
 import info.movito.themoviedbapi.model.core.MovieResultsPage;
 
 import static com.udacity.android.tmdb.adapter.MovieAdapter.MovieAdapterOnClickHandler.TMDB_API;
+import static com.udacity.android.tmdb.constants.BundleConstants.MOVIES_LIST;
+import static com.udacity.android.tmdb.constants.BundleConstants.SORT_OPTION;
 
 /**
  * Async loader to update movie list upon scrolling or selection
@@ -34,6 +36,7 @@ public class FetchResultsLoader extends AsyncTaskLoader<List<MovieInfo>> {
         super(context);
         this.mCurrentMovieBundle = movieBundle;
     }
+
 
     @Override
     protected void onStartLoading() {
@@ -53,10 +56,15 @@ public class FetchResultsLoader extends AsyncTaskLoader<List<MovieInfo>> {
     @Override
     public List<MovieInfo> loadInBackground() {
 
-        TmdbMovies.MovieMethod currentMethod = (TmdbMovies.MovieMethod) mCurrentMovieBundle.getSerializable("CURRENT_MOVIE_METHOD");
+        List<MovieInfo> movieInfos = null;
+        TmdbMovies.MovieMethod currentMethod = (TmdbMovies.MovieMethod) mCurrentMovieBundle.getSerializable(SORT_OPTION);
         int currentPage = mCurrentMovieBundle.getInt("CURRENT_PAGE");
 
         boolean loadFavorites = mCurrentMovieBundle.getBoolean("LOAD_FAVORITES");
+
+        if (mCurrentMovieBundle.containsKey(MOVIES_LIST)) {
+            return mCurrentMovieBundle.getParcelableArrayList(MOVIES_LIST);
+        }
 
         try {
             TmdbMovies tmdbMovies = TMDB_API.getMovies();
@@ -81,14 +89,14 @@ public class FetchResultsLoader extends AsyncTaskLoader<List<MovieInfo>> {
             }
 
             if(movieResultsPage != null) {
-                return convertMovieDbToInfo(movieResultsPage.getResults());
+                movieInfos = convertMovieDbToInfo(movieResultsPage.getResults());
             }
-        } catch (Throwable ex) {
+        } catch (Exception ex) {
             // TmDB API throw MovieDbException, but Async task catches it and throw a Throwable. Because of this app is crashing
             // Tried to override onCancelled by catching MovieDbException here, but didn't work since Aysnc task still throw a Throwable
-            Log.e("Movie DB Exception", "No Internet Connectivity");
+            Log.e("Movie DB Exception", "No Internet Connectivity "+ex);
         }
-        return null;
+        return movieInfos;
     }
 
     @Override

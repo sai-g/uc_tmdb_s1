@@ -10,6 +10,7 @@ import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,28 +27,28 @@ import java.util.List;
 
 import info.movito.themoviedbapi.TmdbMovies;
 
+import static com.udacity.android.tmdb.constants.BundleConstants.CURRENT_PAGE;
+import static com.udacity.android.tmdb.constants.BundleConstants.CURRENT_POSITION;
+import static com.udacity.android.tmdb.constants.BundleConstants.MOVIES_LIST;
+import static com.udacity.android.tmdb.constants.BundleConstants.SORT_OPTION;
 import static com.udacity.android.tmdb.utilities.StringUIUtil.calculateNoOfColumns;
 
 
 public class MainFragment extends Fragment implements MovieAdapter.MovieAdapterOnClickHandler, LoaderManager.LoaderCallbacks<List<MovieInfo>>{
 
     private GridLayoutManager mLayoutManager;
-
     private RecyclerView mRecyclerView;
+
     private MovieAdapter mMovieAdapter;
-
     private ProgressBar mLoadingIndicator;
+
     private TextView mErrorDisplayView;
-
     private int mCurrentPage;
-    private TmdbMovies.MovieMethod mCurrentMovieMethod = TmdbMovies.MovieMethod.now_playing;
+    private int mCurrentVisiblePosition;
 
+    private TmdbMovies.MovieMethod mCurrentMovieMethod = TmdbMovies.MovieMethod.now_playing;
     // constant int to uniquely identify the loader
     private static final int FETCH_RESULTS_LOADER = 100;
-
-    private static final String SORT_OPTION = "CURRENT_SORT_OPTION";
-    private static final String CURRENT_PAGE = "CURRENT_PAGE_NUMBER";
-    private static final String MOVIES_LIST = "MOVIES_LIST";
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -81,34 +82,36 @@ public class MainFragment extends Fragment implements MovieAdapter.MovieAdapterO
 
         mLoadingIndicator = (ProgressBar) rootView.findViewById(R.id.movie_loading_indicator);
 
+        List<MovieInfo> movieInfos = null;
         // retrieve movie method from Bundle
         if (savedInstanceState != null) {
-            if (savedInstanceState.containsKey(SORT_OPTION)) {
-                mCurrentMovieMethod = (TmdbMovies.MovieMethod) savedInstanceState.getSerializable(SORT_OPTION);
+            if (savedInstanceState.containsKey(CURRENT_POSITION)) {
+                mCurrentVisiblePosition = savedInstanceState.getInt(CURRENT_POSITION);
             }
             if (savedInstanceState.containsKey(CURRENT_PAGE)) {
                 mCurrentPage = savedInstanceState.getInt(CURRENT_PAGE);
             }
-            if (savedInstanceState.containsKey(MOVIES_LIST)) {
-                List<MovieInfo> movieInfos = savedInstanceState.getParcelableArrayList(MOVIES_LIST);
-                mMovieAdapter.setMovieData(movieInfos);
+            if (savedInstanceState.containsKey(SORT_OPTION)) {
+                mCurrentMovieMethod = (TmdbMovies.MovieMethod) savedInstanceState.getSerializable(SORT_OPTION);
+
+                if (savedInstanceState.containsKey(MOVIES_LIST)) {
+                    movieInfos = savedInstanceState.getParcelableArrayList(MOVIES_LIST);
+                    loadMovieDbData(false, movieInfos);
+                }
             }
+
         } else {
             // mCurrentMovieMethod = TmdbMovies.MovieMethod.now_playing;
             // reset current page whenever new layout is created
             resetCurrentPage();
-            // considering default movie method as now playing movies
-            loadMovieDbData(false);
+            loadMovieDbData(false, null);
         }
+        // considering default movie method as now playing movies
 
         return rootView;
     }
 
-    public MainFragment() {
-
-    }
-
-    private void loadMovieDbData(boolean loadFavorites) {
+    private void loadMovieDbData(boolean loadFavorites, List<MovieInfo> movieInfos) {
 
         showMovieDbDataView();
 
@@ -116,10 +119,14 @@ public class MainFragment extends Fragment implements MovieAdapter.MovieAdapterO
 
         // loader takes bundle as input
         Bundle currentMovieBundle = new Bundle();
-        currentMovieBundle.putSerializable("CURRENT_MOVIE_METHOD", mCurrentMovieMethod);
-        currentMovieBundle.putInt("CURRENT_PAGE", mCurrentPage);
+        currentMovieBundle.putSerializable(SORT_OPTION, mCurrentMovieMethod);
+        currentMovieBundle.putInt(CURRENT_PAGE, mCurrentPage);
         if (loadFavorites)
             currentMovieBundle.putBoolean("LOAD_FAVORITES", true);
+
+        if (movieInfos != null) {
+            currentMovieBundle.putParcelableArrayList(MOVIES_LIST, (ArrayList<? extends Parcelable>) movieInfos);
+        }
 
         LoaderManager loaderManager = getActivity().getLoaderManager();
         Loader<List> fetchResultsLoader = loaderManager.getLoader(FETCH_RESULTS_LOADER);
@@ -129,16 +136,6 @@ public class MainFragment extends Fragment implements MovieAdapter.MovieAdapterO
             loaderManager.restartLoader(FETCH_RESULTS_LOADER, currentMovieBundle, this);
         }
 
-        /*final Loader<List> loader = loaderManager.getLoader(FETCH_RESULTS_LOADER);
-        if (loader != null){
-            loaderManager.destroyLoader(FETCH_RESULTS_LOADER);
-        }
-        loaderManager.restartLoader(FETCH_RESULTS_LOADER, currentMovieBundle, this);
-*/
-        /*if (loader != null && loader.isReset()) {
-        } else {
-            loaderManager.initLoader(FETCH_RESULTS_LOADER, currentMovieBundle, this);
-        }*/
         // passing currentmovie method to get results based on menu selection
         // new FetchResultsTask(this.getContext(), new FetchResultsTaskCompleteListener()).execute(mCurrentMovieMethod, mCurrentPage);
     }
@@ -182,7 +179,7 @@ public class MainFragment extends Fragment implements MovieAdapter.MovieAdapterO
 
                 //check to see if we reached current threshold, request more movies when reaching current threshold
                 if(totalMoviesCount == getLastVisibleItemPosition() + 1) {
-                    loadMovieDbData(false);
+                    loadMovieDbData(false, null);
                 }
 
             }
@@ -206,7 +203,7 @@ public class MainFragment extends Fragment implements MovieAdapter.MovieAdapterO
         resetCurrentPage();
         mMovieAdapter.clearMovieData();
         // call API to get movies
-        loadMovieDbData(loadFavorites);
+        loadMovieDbData(loadFavorites, null);
     }
 
     private void resetCurrentPage() {
@@ -220,6 +217,7 @@ public class MainFragment extends Fragment implements MovieAdapter.MovieAdapterO
 
     @Override
     public void onLoadFinished(Loader<List<MovieInfo>> loader, List<MovieInfo> data) {
+        Log.d("LOADER", "onLoadFinished");
         if(data != null) {
             //increment current page when movies are returned
             mCurrentPage++;
@@ -233,10 +231,15 @@ public class MainFragment extends Fragment implements MovieAdapter.MovieAdapterO
         }
 
         mLoadingIndicator.setVisibility(View.GONE);
+
+        // scroll to current visible position on rotation
+        if (mCurrentVisiblePosition > 0)
+            mRecyclerView.scrollToPosition(mCurrentVisiblePosition);
     }
 
     @Override
     public void onLoaderReset(Loader<List<MovieInfo>> loader) {
+        Log.d("LOADER", "onLoaderReset");
         mMovieAdapter.setMovieData(null);
     }
 
@@ -267,8 +270,12 @@ public class MainFragment extends Fragment implements MovieAdapter.MovieAdapterO
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        outState.putParcelableArrayList(MOVIES_LIST, (ArrayList<? extends Parcelable>) mMovieAdapter.getMovieData());
+        // movie info added to bundle
+        if (mMovieAdapter.getMovieData() != null) {
+            outState.putParcelableArrayList(MOVIES_LIST, (ArrayList<? extends Parcelable>) mMovieAdapter.getMovieData());
+        }
         outState.putSerializable(SORT_OPTION, mCurrentMovieMethod);
         outState.putInt(CURRENT_PAGE, mCurrentPage);
+        outState.putInt(CURRENT_POSITION, getLastVisibleItemPosition());
     }
 }

@@ -12,6 +12,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -98,10 +99,6 @@ public class MovieInfoFragment extends Fragment implements LoaderManager.LoaderC
 
             MovieInfo movieInfo = intentThatStartedThisActivity.getParcelableExtra(Intent.EXTRA_TEXT);
 
-            // TODO add trailer segment
-
-            //TODO add reviews segment
-
             Bundle movieBundle = new Bundle();
             movieBundle.putInt("MOVIE_ID", movieInfo.getId());
 
@@ -114,10 +111,12 @@ public class MovieInfoFragment extends Fragment implements LoaderManager.LoaderC
                 loaderManager.restartLoader(ADDITIONAL_MOVIE_INFO_LOADER, movieBundle, this);
             }
 
+            // reviews segment
             mReviewsAdapter = new MyReviewRecyclerViewAdapter();
             mReviewsRecyclerView = (RecyclerView) rootView.findViewById(R.id.review_list);
             mReviewsRecyclerView.setAdapter(mReviewsAdapter);
 
+            // trailer segment
             mTrailersAdapter = new MyTrailerRecyclerViewAdapter(this);
             mTrailerRecyclerView = (RecyclerView) rootView.findViewById(R.id.trailer_list);
             mTrailerRecyclerView.setAdapter(mTrailersAdapter);
@@ -125,10 +124,6 @@ public class MovieInfoFragment extends Fragment implements LoaderManager.LoaderC
         }
 
         return rootView;
-    }
-
-    public MovieInfoFragment() {
-
     }
 
     @Override
@@ -249,6 +244,7 @@ public class MovieInfoFragment extends Fragment implements LoaderManager.LoaderC
             startActivity(appIntent);
         } catch (ActivityNotFoundException ex) {
             // when youtube app not found, open browser
+            Log.e("YOUTUBE VIDEO", "Youtube app not found, so opening video in browser "+ex);
             startActivity(webIntent);
         }
     }
@@ -265,7 +261,7 @@ public class MovieInfoFragment extends Fragment implements LoaderManager.LoaderC
         Uri queryUri = Uri.parse(FavoritesContentProvider.CONTENT_URI + "/" + movieId);
 
         Cursor cursor = getContext().getContentResolver().query(queryUri, null, null, null, null);
-        while (cursor.moveToNext()) {
+        while (cursor != null && cursor.moveToNext()) {
             if (movieId == cursor.getInt(0)) {
                 mFavoriteButton.toggleFavorite();
             }

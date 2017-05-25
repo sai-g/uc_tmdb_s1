@@ -63,7 +63,7 @@ public class StringUIUtil {
             // enabling picasso logs to check cache status, whether image loaded from network, disk or memory
             Picasso picasso = Picasso.with(context);
             picasso.setIndicatorsEnabled(true);
-            picasso.setLoggingEnabled(true);
+            //picasso.setLoggingEnabled(true);
                     picasso.load(imageUrl.toString())
                     .placeholder(R.drawable.placeholder)
                     .error(alternateImageOptions[0])
