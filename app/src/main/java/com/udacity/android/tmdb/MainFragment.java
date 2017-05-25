@@ -179,6 +179,7 @@ public class MainFragment extends Fragment implements MovieAdapter.MovieAdapterO
 
                 //check to see if we reached current threshold, request more movies when reaching current threshold
                 if(totalMoviesCount == getLastVisibleItemPosition() + 1) {
+                    mCurrentVisiblePosition = 0;
                     loadMovieDbData(false, null);
                 }
 

@@ -18,6 +18,7 @@ import info.movito.themoviedbapi.model.MovieDb;
 import info.movito.themoviedbapi.model.core.MovieResultsPage;
 
 import static com.udacity.android.tmdb.adapter.MovieAdapter.MovieAdapterOnClickHandler.TMDB_API;
+import static com.udacity.android.tmdb.constants.BundleConstants.CURRENT_PAGE;
 import static com.udacity.android.tmdb.constants.BundleConstants.MOVIES_LIST;
 import static com.udacity.android.tmdb.constants.BundleConstants.SORT_OPTION;
 
@@ -58,7 +59,7 @@ public class FetchResultsLoader extends AsyncTaskLoader<List<MovieInfo>> {
 
         List<MovieInfo> movieInfos = null;
         TmdbMovies.MovieMethod currentMethod = (TmdbMovies.MovieMethod) mCurrentMovieBundle.getSerializable(SORT_OPTION);
-        int currentPage = mCurrentMovieBundle.getInt("CURRENT_PAGE");
+        int currentPage = mCurrentMovieBundle.getInt(CURRENT_PAGE);
 
         boolean loadFavorites = mCurrentMovieBundle.getBoolean("LOAD_FAVORITES");
 

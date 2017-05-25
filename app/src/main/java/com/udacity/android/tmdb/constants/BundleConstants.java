@@ -7,7 +7,7 @@ package com.udacity.android.tmdb.constants;
 public class BundleConstants {
 
     public static final String SORT_OPTION = "CURRENT_SORT_OPTION";
-    public static final String CURRENT_PAGE = "CURRENT_PAGE_NUMBER";
+    public static final String CURRENT_PAGE = "CURRENT_PAGE";
     public static final String MOVIES_LIST = "MOVIES_LIST";
     public static final String CURRENT_POSITION = "CURRENT_POSITION";
 
