@@ -73,9 +73,7 @@ public class FetchResultsLoader extends AsyncTaskLoader<List<MovieInfo>> {
             MovieResultsPage movieResultsPage = null;
 
             if (loadFavorites) {
-
                 Uri queryUri = FavoritesContentProvider.CONTENT_URI;
-
                 Cursor cursor = getContext().getContentResolver().query(queryUri, null, null, null, null);
                 return convertDbInfoToMovieInfo(cursor);
             }

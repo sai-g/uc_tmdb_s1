@@ -102,4 +102,5 @@ public class FetchResultsTask extends AsyncTask<Object, Void, List<MovieInfo>> {
         }
         return movieInfos;
     }
+
 }

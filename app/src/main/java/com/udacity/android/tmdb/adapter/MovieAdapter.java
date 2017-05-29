@@ -8,9 +8,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.udacity.android.tmdb.BuildConfig;
 import com.udacity.android.tmdb.R;
 import com.udacity.android.tmdb.model.MovieInfo;
+import com.udacity.android.tmdb.utilities.NetworkUtil;
 
 import java.net.URL;
 import java.util.List;
@@ -33,8 +33,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
 
     public interface MovieAdapterOnClickHandler {
 
-        String API_KEY = BuildConfig.TMDB_API_KEY;
-        TmdbApi TMDB_API = new TmdbApi(API_KEY);
+        TmdbApi TMDB_API = NetworkUtil.getTmdbApi();
 
         void onClick(MovieInfo selectedMovie);
     }
@@ -55,9 +54,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         Context context = parent.getContext();
         int layoutIdForItem = R.layout.movies_list_item;
         LayoutInflater layoutInflater = LayoutInflater.from(context);
-        boolean shouldAttachToParentImmediately = false;
 
-        View view = layoutInflater.inflate(layoutIdForItem, parent, shouldAttachToParentImmediately);
+        View view = layoutInflater.inflate(layoutIdForItem, parent, false);
         return new MovieAdapterViewHolder(view);
     }
 

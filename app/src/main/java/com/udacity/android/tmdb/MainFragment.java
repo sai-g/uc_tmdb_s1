@@ -218,7 +218,7 @@ public class MainFragment extends Fragment implements MovieAdapter.MovieAdapterO
 
     @Override
     public void onLoadFinished(Loader<List<MovieInfo>> loader, List<MovieInfo> data) {
-        Log.d("LOADER", "onLoadFinished");
+
         if(data != null) {
             //increment current page when movies are returned
             mCurrentPage++;

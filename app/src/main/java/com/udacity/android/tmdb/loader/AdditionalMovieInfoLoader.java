@@ -58,4 +58,5 @@ public class AdditionalMovieInfoLoader extends AsyncTaskLoader<MovieDb> {
         }*/
         return movieDb;
     }
+
 }

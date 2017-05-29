@@ -22,7 +22,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.ivbaranov.mfb.MaterialFavoriteButton;
-import com.udacity.android.tmdb.adapter.MovieAdapter;
 import com.udacity.android.tmdb.contentprovider.FavoritesContentProvider;
 import com.udacity.android.tmdb.data.FavoritesTable;
 import com.udacity.android.tmdb.loader.AdditionalMovieInfoLoader;
@@ -38,6 +37,7 @@ import info.movito.themoviedbapi.Utils;
 import info.movito.themoviedbapi.model.MovieDb;
 import info.movito.themoviedbapi.model.Video;
 
+import static com.udacity.android.tmdb.adapter.MovieAdapter.MovieAdapterOnClickHandler.TMDB_API;
 import static com.udacity.android.tmdb.utilities.StringUIUtil.DECIMAL_FORMAT;
 import static com.udacity.android.tmdb.utilities.StringUIUtil.convertObjToBytes;
 import static com.udacity.android.tmdb.utilities.StringUIUtil.getFinalString;
@@ -48,6 +48,9 @@ import static com.udacity.android.tmdb.utilities.StringUIUtil.setStringResource;
 
 
 public class MovieInfoFragment extends Fragment implements LoaderManager.LoaderCallbacks<MovieDb>, TrailerFragment.OnListFragmentInteractionListener{
+
+    /*@BindView(R.id.movie_info_loading_indicator)
+    ProgressBar mMovieInfoLoadingIndicator;*/
 
     @BindView(R.id.movie_info_title)
     TextView mMovieTitle;
@@ -121,6 +124,7 @@ public class MovieInfoFragment extends Fragment implements LoaderManager.LoaderC
             mTrailerRecyclerView = (RecyclerView) rootView.findViewById(R.id.trailer_list);
             mTrailerRecyclerView.setAdapter(mTrailersAdapter);
 
+            initMovieInfoFragment(movieInfo);
         }
 
         return rootView;
@@ -141,85 +145,11 @@ public class MovieInfoFragment extends Fragment implements LoaderManager.LoaderC
     public void onLoadFinished(Loader<MovieDb> loader, MovieDb data) {
 
         if (data != null) {
-
-            // Set image to ImageView
-            URL imageUrl = Utils.createImageUrl(MovieAdapter.MovieAdapterOnClickHandler.TMDB_API, data.getPosterPath(), getResources().getString(R.string.movie_info_image_size));
-            // store image url as tag, it is stored in db
-            if (imageUrl != null)
-                mMoviePoster.setTag(imageUrl.toString());
-            // Alternate image will be shown when movie poster image not present
-            int[] alternateImageOptions = {R.drawable.image_not_found, getResources().getInteger(R.integer.alt_info_image_width), getResources().getInteger(R.integer.alt_info_image_height)};
-            setImageResource(getActivity(), mMoviePoster, imageUrl, alternateImageOptions);
-            mMoviePoster.setVisibility(View.VISIBLE);
-
             // reviews section
-            if (data.getReviews() != null && !data.getReviews().isEmpty()) {
-                mReviewsAdapter.setReviews(data.getReviews());
-                mReviewsNotAvailable.setTag(convertObjToBytes(data.getReviews()));
-            } else {
-                // show no reviews available text
-                mReviewsNotAvailable.setVisibility(View.VISIBLE);
-            }
+            setReviewsView(data);
 
             // trailers section
-            if (data.getVideos() != null && !data.getVideos().isEmpty()) {
-                for (Video video : data.getVideos()) {
-                    if ("YouTube".equals(video.getSite()) && "Trailer".equals(video.getType())) {
-                        mTrailersAdapter.setVideo(video);
-                    }
-                }
-                mTrailersNotAvailable.setTag(convertObjToBytes(data.getVideos()));
-            } else {
-                mTrailersNotAvailable.setVisibility(View.VISIBLE);
-            }
-
-            // set movie id
-            // set tag
-            mMovieTitle.setTag(data.getId() + "-" + data.getTitle() + "-" + data.getOriginalTitle());
-
-            // set textview with string formatted from strings xml
-            setStringResource(mMovieTitle, R.string.movie_title, data.getOriginalTitle(), data.getReleaseDate().split("-")[0]);
-
-
-            // movie user rating
-            mMovieRating.setTag(data.getVoteAverage());
-            mMovieRating.setRating(data.getVoteAverage()/2);
-            //setStringResource(mMovieRating, R.string.movie_user_rating, DECIMAL_FORMAT.format(data.getVoteAverage()));
-
-            // movie popularity
-            mMoviePopularity.setTag(data.getPopularity());
-            setStringResource(mMoviePopularity, R.string.movie_popularity, DECIMAL_FORMAT.format(data.getPopularity()));
-
-            // set movie release date
-            mMovieReleaseDate.setTag(data.getReleaseDate());
-            setStringResource(mMovieReleaseDate, R.string.movie_release_date, getFriendlyDateString(data.getReleaseDate()));
-
-            setFavoriteButtonStatus();
-
-            // state of the favorite button
-            mFavoriteButton.setOnFavoriteChangeListener(new MaterialFavoriteButton.OnFavoriteChangeListener() {
-                @Override
-                public void onFavoriteChanged(MaterialFavoriteButton buttonView, boolean favorite) {
-                    if (favorite) {
-                        saveFavorite();
-                        Toast.makeText(buttonView.getContext(), "Marked as Favorite", Toast.LENGTH_LONG).show();
-                    }
-                    else {
-                        deleteFavorite();
-                        Toast.makeText(buttonView.getContext(), "Removed from Favorites", Toast.LENGTH_LONG).show();
-                    }
-                }
-            });
-
-            // set overview text
-            if (!isEmpty(data.getOverview())) {
-                // show overview label/title when overview text exists
-
-                // mMovieInfoOverviewTitle.setVisibility(View.VISIBLE);
-                String overviewTxt = getFinalString(mMovieOverview, R.string.movie_info_overview, data.getOverview());
-                mMovieOverview.setText(Html.fromHtml(overviewTxt));
-            }
-
+            setTrailersView(data);
         }
     }
 
@@ -321,5 +251,103 @@ public class MovieInfoFragment extends Fragment implements LoaderManager.LoaderC
 
         Uri deleteUri = Uri.parse(FavoritesContentProvider.CONTENT_URI + "/" + movieId);
         getContext().getContentResolver().delete(deleteUri, selection, selectionArgs);
+    }
+
+    /**
+     * initialize view with MovieInfo
+     * @param movieInfo
+     */
+    private void initMovieInfoFragment(MovieInfo movieInfo) {
+
+        if (movieInfo != null) {
+
+            // Set image to ImageView
+            URL imageUrl = Utils.createImageUrl(TMDB_API, movieInfo.getPosterPath(), getResources().getString(R.string.movie_info_image_size));
+            // store image url as tag, it is stored in db
+            if (imageUrl != null)
+                mMoviePoster.setTag(imageUrl.toString());
+            // Alternate image will be shown when movie poster image not present
+            int[] alternateImageOptions = {R.drawable.image_not_found, getResources().getInteger(R.integer.alt_info_image_width), getResources().getInteger(R.integer.alt_info_image_height)};
+            setImageResource(getActivity(), mMoviePoster, imageUrl, alternateImageOptions);
+            mMoviePoster.setVisibility(View.VISIBLE);
+
+            // set movie id
+            // set tag
+            mMovieTitle.setTag(movieInfo.getId() + "-" + movieInfo.getTitle() + "-" + movieInfo.getOriginalTitle());
+
+            // set textview with string formatted from strings xml
+            setStringResource(mMovieTitle, R.string.movie_title, movieInfo.getOriginalTitle(), movieInfo.getReleaseDate().split("-")[0]);
+
+            // movie user rating
+            mMovieRating.setTag(movieInfo.getVoteAverage());
+            mMovieRating.setRating(movieInfo.getVoteAverage()/2);
+            //setStringResource(mMovieRating, R.string.movie_user_rating, DECIMAL_FORMAT.format(data.getVoteAverage()));
+
+            // movie popularity
+            mMoviePopularity.setTag(movieInfo.getPopularity());
+            setStringResource(mMoviePopularity, R.string.movie_popularity, DECIMAL_FORMAT.format(movieInfo.getPopularity()));
+
+            // set movie release date
+            mMovieReleaseDate.setTag(movieInfo.getReleaseDate());
+            setStringResource(mMovieReleaseDate, R.string.movie_release_date, getFriendlyDateString(movieInfo.getReleaseDate()));
+
+            setFavoriteButtonStatus();
+
+            // state of the favorite button
+            mFavoriteButton.setOnFavoriteChangeListener(new MaterialFavoriteButton.OnFavoriteChangeListener() {
+                @Override
+                public void onFavoriteChanged(MaterialFavoriteButton buttonView, boolean favorite) {
+                    if (favorite) {
+                        saveFavorite();
+                        Toast.makeText(buttonView.getContext(), "Marked as Favorite", Toast.LENGTH_LONG).show();
+                    }
+                    else {
+                        deleteFavorite();
+                        Toast.makeText(buttonView.getContext(), "Removed from Favorites", Toast.LENGTH_LONG).show();
+                    }
+                }
+            });
+
+            // set overview text
+            if (!isEmpty(movieInfo.getOverview())) {
+                // show overview label/title when overview text exists
+
+                // mMovieInfoOverviewTitle.setVisibility(View.VISIBLE);
+                String overviewTxt = getFinalString(mMovieOverview, R.string.movie_info_overview, movieInfo.getOverview());
+                mMovieOverview.setText(Html.fromHtml(overviewTxt));
+            }
+
+        }
+    }
+
+    /**
+     * to set reviews in movie info fragment
+     */
+    private void setReviewsView(MovieDb movieDb) {
+
+        if (movieDb.getReviews() != null && !movieDb.getReviews().isEmpty()) {
+            mReviewsAdapter.setReviews(movieDb.getReviews());
+            mReviewsNotAvailable.setTag(convertObjToBytes(movieDb.getReviews()));
+        } else {
+            // show no reviews available text
+            mReviewsNotAvailable.setVisibility(View.VISIBLE);
+        }
+    }
+
+    /**
+     * to set trailer videos in movie info fragment
+     */
+    private void setTrailersView(MovieDb movieDb) {
+
+        if (movieDb.getVideos() != null && !movieDb.getVideos().isEmpty()) {
+            for (Video video : movieDb.getVideos()) {
+                if ("YouTube".equals(video.getSite()) && "Trailer".equals(video.getType())) {
+                    mTrailersAdapter.setVideo(video);
+                }
+            }
+            mTrailersNotAvailable.setTag(convertObjToBytes(movieDb.getVideos()));
+        } else {
+            mTrailersNotAvailable.setVisibility(View.VISIBLE);
+        }
     }
 }
