@@ -36,21 +36,6 @@
             app:mfb_rotation_duration="400"
             app:mfb_size="48"
             tools:layout_editor_absoluteX="312dp" />
-        <!--<com.github.ivbaranov.mfb.MaterialFavoriteButton
-            android:id="@+id/favorite_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:mfb_animate_favorite="true"
-            app:mfb_animate_unfavorite="false"
-            app:mfb_bounce_duration="300"
-            app:mfb_favorite_image="@android:drawable/btn_star_big_on"
-            app:mfb_not_favorite_image="@android:drawable/btn_star_big_off"
-            app:mfb_rotation_angle="360"
-            app:mfb_rotation_duration="400"
-            app:mfb_size="48"
-            tools:layout_editor_absoluteX="312dp" />-->
 
         <ImageView
             android:id="@+id/movie_info_poster"
@@ -141,14 +126,6 @@
                 tools:layout_editor_absoluteX="8dp"
                 tools:layout_editor_absoluteY="648dp" />
 
-            <View
-                android:id="@+id/view2"
-                android:layout_width="0dp"
-                android:layout_height="2dp"
-                android:background="#c0c0c0"
-                tools:layout_editor_absoluteX="0dp"
-                tools:layout_editor_absoluteY="648dp" />
-
             <TextView
                 android:id="@+id/trailer_list_title"
                 android:layout_width="match_parent"
@@ -165,7 +142,6 @@
                 android:id="@+id/trailers_not_available"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="@dimen/overview_heading_padding_top"
                 android:text="@string/no_trailers_available_yet"
                 android:textSize="@dimen/sub_heading"
                 android:textStyle="normal"
@@ -185,19 +161,11 @@
 
             </android.support.v7.widget.RecyclerView>
 
-            <View
-                android:id="@+id/view3"
-                android:layout_width="0dp"
-                android:layout_height="2dp"
-                android:background="#c0c0c0"
-                tools:layout_editor_absoluteX="0dp"
-                tools:layout_editor_absoluteY="648dp" />
-
             <TextView
                 android:id="@+id/movie_info_reviews_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="16dp"
+                android:layout_marginTop="16dp"
                 android:text="@string/reviews"
                 android:textSize="@dimen/sub_heading"
                 android:textStyle="bold"
@@ -209,7 +177,6 @@
                 android:id="@+id/reviews_not_available"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="@dimen/overview_heading_padding_top"
                 android:text="@string/no_reviews_available_yet"
                 android:textSize="@dimen/sub_heading"
                 android:textStyle="normal"

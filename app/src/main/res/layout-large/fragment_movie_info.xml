@@ -9,9 +9,10 @@
         android:id="@+id/activity_movie_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:context=".MovieInfoActivity$MovieInfoFragment"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
         android:orientation="vertical"
-        >
+        tools:context=".MovieInfoActivity$MovieInfoFragment">
 
         <com.github.ivbaranov.mfb.MaterialFavoriteButton
             android:id="@+id/favorite_button"
@@ -27,7 +28,7 @@
             app:mfb_rotation_angle="360"
             app:mfb_rotation_duration="400"
             app:mfb_size="48"
-            tools:layout_editor_absoluteX="312dp" />
+            tools:layout_editor_absoluteX="536dp" />
         <!--<com.github.ivbaranov.mfb.MaterialFavoriteButton
             android:id="@+id/favorite_button"
             android:layout_width="wrap_content"
@@ -59,11 +60,13 @@
 
         <!-- this layout contains title, year, rating and popularity -->
         <LinearLayout
-            android:layout_width="344dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="20dp"
             android:gravity="center_horizontal"
             android:orientation="vertical"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/movie_info_poster"
@@ -132,19 +135,11 @@
                 tools:layout_editor_absoluteX="8dp"
                 tools:layout_editor_absoluteY="648dp" />
 
-            <View
-                android:id="@+id/view2"
-                android:layout_width="0dp"
-                android:layout_height="2dp"
-                android:background="#c0c0c0"
-                tools:layout_editor_absoluteX="0dp"
-                tools:layout_editor_absoluteY="648dp" />
-
             <TextView
                 android:id="@+id/trailer_list_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="@dimen/overview_heading_padding_top"
+                android:layout_marginTop="16dp"
                 android:text="@string/trailers"
                 android:textSize="@dimen/sub_heading"
                 android:textStyle="bold"
@@ -156,7 +151,6 @@
                 android:id="@+id/trailers_not_available"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="@dimen/overview_heading_padding_top"
                 android:text="@string/no_trailers_available_yet"
                 android:textSize="@dimen/sub_heading"
                 android:textStyle="normal"
@@ -176,14 +170,6 @@
 
             </android.support.v7.widget.RecyclerView>
 
-            <View
-                android:id="@+id/view3"
-                android:layout_width="0dp"
-                android:layout_height="2dp"
-                android:background="#c0c0c0"
-                tools:layout_editor_absoluteX="0dp"
-                tools:layout_editor_absoluteY="648dp" />
-
             <TextView
                 android:id="@+id/movie_info_reviews_title"
                 android:layout_width="match_parent"
@@ -200,7 +186,6 @@
                 android:id="@+id/reviews_not_available"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="@dimen/overview_heading_padding_top"
                 android:text="@string/no_reviews_available_yet"
                 android:textSize="@dimen/sub_heading"
                 android:textStyle="normal"

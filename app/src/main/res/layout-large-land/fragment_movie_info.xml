@@ -27,7 +27,7 @@
             app:mfb_rotation_angle="360"
             app:mfb_rotation_duration="400"
             app:mfb_size="48"
-            tools:layout_editor_absoluteX="312dp" />
+            tools:layout_editor_absoluteX="976dp" />
         <!--<com.github.ivbaranov.mfb.MaterialFavoriteButton
             android:id="@+id/favorite_button"
             android:layout_width="wrap_content"
@@ -49,30 +49,48 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="top|center"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="16dp"
+            android:adjustViewBounds="true"
             android:contentDescription="@string/movie_poster"
-            android:src="@drawable/image_not_found"
-            android:visibility="visible"
+            android:scaleType="fitCenter"
+            android:src="@drawable/placeholder"
+            app:layout_constraintHorizontal_bias="0.043"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/favorite_button" />
 
+        <!--<ImageView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/movie_poster"
+            android:contentDescription="@string/movie_poster"
+            android:adjustViewBounds="true"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/placeholder"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>-->
 
         <!-- this layout contains title, year, rating and popularity -->
         <LinearLayout
-            android:layout_width="344dp"
+            android:layout_width="612dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
             android:gravity="center_horizontal"
             android:orientation="vertical"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/movie_info_poster"
-            tools:layout_editor_absoluteX="8dp">
+            app:layout_constraintLeft_toRightOf="@+id/movie_info_poster"
+            app:layout_constraintStart_toEndOf="@id/movie_info_poster"
+            app:layout_constraintTop_toTopOf="parent">
 
             <TextView
                 android:id="@+id/movie_info_title"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_weight="1"
                 android:gravity="center_horizontal"
@@ -115,7 +133,7 @@
 
             <TextView
                 android:id="@+id/movie_release_date"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingBottom="@dimen/text_content_padding_bottom"
                 android:paddingTop="@dimen/text_content_padding_top"
@@ -132,19 +150,11 @@
                 tools:layout_editor_absoluteX="8dp"
                 tools:layout_editor_absoluteY="648dp" />
 
-            <View
-                android:id="@+id/view2"
-                android:layout_width="0dp"
-                android:layout_height="2dp"
-                android:background="#c0c0c0"
-                tools:layout_editor_absoluteX="0dp"
-                tools:layout_editor_absoluteY="648dp" />
-
             <TextView
                 android:id="@+id/trailer_list_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="@dimen/overview_heading_padding_top"
+                android:layout_marginTop="16dp"
                 android:text="@string/trailers"
                 android:textSize="@dimen/sub_heading"
                 android:textStyle="bold"
@@ -156,7 +166,6 @@
                 android:id="@+id/trailers_not_available"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="@dimen/overview_heading_padding_top"
                 android:text="@string/no_trailers_available_yet"
                 android:textSize="@dimen/sub_heading"
                 android:textStyle="normal"
@@ -168,7 +177,7 @@
                 android:id="@+id/trailer_list"
                 android:name="com.udacity.android.tmdb.TrailerFragment"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 app:layoutManager="LinearLayoutManager"
                 tools:layout_editor_absoluteX="8dp"
@@ -176,19 +185,11 @@
 
             </android.support.v7.widget.RecyclerView>
 
-            <View
-                android:id="@+id/view3"
-                android:layout_width="0dp"
-                android:layout_height="2dp"
-                android:background="#c0c0c0"
-                tools:layout_editor_absoluteX="0dp"
-                tools:layout_editor_absoluteY="648dp" />
-
             <TextView
                 android:id="@+id/movie_info_reviews_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="@dimen/overview_heading_padding_top"
+                android:layout_marginTop="16dp"
                 android:text="@string/reviews"
                 android:textSize="@dimen/sub_heading"
                 android:textStyle="bold"
@@ -200,7 +201,6 @@
                 android:id="@+id/reviews_not_available"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="@dimen/overview_heading_padding_top"
                 android:text="@string/no_reviews_available_yet"
                 android:textSize="@dimen/sub_heading"
                 android:textStyle="normal"
@@ -212,7 +212,7 @@
                 android:id="@+id/review_list"
                 android:name="com.udacity.android.tmdb.ReviewFragment"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 app:layoutManager="LinearLayoutManager"
                 tools:layout_editor_absoluteX="8dp"
                 tools:layout_editor_absoluteY="575dp" />

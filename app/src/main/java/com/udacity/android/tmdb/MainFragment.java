@@ -18,7 +18,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.udacity.android.tmdb.adapter.MovieAdapter;
-import com.udacity.android.tmdb.listener.AsyncTaskCompleteListener;
 import com.udacity.android.tmdb.loader.FetchResultsLoader;
 import com.udacity.android.tmdb.model.MovieInfo;
 
@@ -136,8 +135,6 @@ public class MainFragment extends Fragment implements MovieAdapter.MovieAdapterO
             loaderManager.restartLoader(FETCH_RESULTS_LOADER, currentMovieBundle, this);
         }
 
-        // passing currentmovie method to get results based on menu selection
-        // new FetchResultsTask(this.getContext(), new FetchResultsTaskCompleteListener()).execute(mCurrentMovieMethod, mCurrentPage);
     }
 
     /**
@@ -242,29 +239,6 @@ public class MainFragment extends Fragment implements MovieAdapter.MovieAdapterO
     public void onLoaderReset(Loader<List<MovieInfo>> loader) {
         Log.d("LOADER", "onLoaderReset");
         mMovieAdapter.setMovieData(null);
-    }
-
-    /**
-     * this task complete listener will be called when fetch results tasks is complete(from onPostExecute)
-     */
-    public class FetchResultsTaskCompleteListener implements AsyncTaskCompleteListener<List<MovieInfo>> {
-        @Override
-        public void onTaskComplete(List<MovieInfo> movieInfos) {
-            // show movie db when there is a movie list present
-            if(movieInfos != null) {
-                //increment current page when movies are returned
-                mCurrentPage++;
-                showMovieDbDataView();
-                mMovieAdapter.setMovieData(movieInfos);
-            }
-            // clear data in adapter and show error message when there is no response from api
-            else {
-                mMovieAdapter.clearMovieData();
-                showErrorMessageView();
-            }
-
-            mLoadingIndicator.setVisibility(View.GONE);
-        }
     }
 
     @Override

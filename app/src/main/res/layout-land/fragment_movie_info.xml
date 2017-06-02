@@ -76,13 +76,15 @@
         <LinearLayout
             android:layout_width="344dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="14dp"
             android:layout_marginTop="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
             android:gravity="center_horizontal"
             android:orientation="vertical"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintLeft_toRightOf="@+id/movie_info_poster"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintStart_toEndOf="@id/movie_info_poster"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:layout_editor_absoluteX="207dp">
 
             <TextView
                 android:id="@+id/movie_info_title"
@@ -147,19 +149,11 @@
                 tools:layout_editor_absoluteX="8dp"
                 tools:layout_editor_absoluteY="648dp" />
 
-            <View
-                android:id="@+id/view2"
-                android:layout_width="0dp"
-                android:layout_height="2dp"
-                android:background="#c0c0c0"
-                tools:layout_editor_absoluteX="0dp"
-                tools:layout_editor_absoluteY="648dp" />
-
             <TextView
                 android:id="@+id/trailer_list_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="@dimen/overview_heading_padding_top"
+                android:layout_marginTop="16dp"
                 android:text="@string/trailers"
                 android:textSize="@dimen/sub_heading"
                 android:textStyle="bold"
@@ -171,7 +165,6 @@
                 android:id="@+id/trailers_not_available"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="@dimen/overview_heading_padding_top"
                 android:text="@string/no_trailers_available_yet"
                 android:textSize="@dimen/sub_heading"
                 android:textStyle="normal"
@@ -191,19 +184,11 @@
 
             </android.support.v7.widget.RecyclerView>
 
-            <View
-                android:id="@+id/view3"
-                android:layout_width="0dp"
-                android:layout_height="2dp"
-                android:background="#c0c0c0"
-                tools:layout_editor_absoluteX="0dp"
-                tools:layout_editor_absoluteY="648dp" />
-
             <TextView
                 android:id="@+id/movie_info_reviews_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="@dimen/overview_heading_padding_top"
+                android:layout_marginTop="16dp"
                 android:text="@string/reviews"
                 android:textSize="@dimen/sub_heading"
                 android:textStyle="bold"
@@ -215,7 +200,6 @@
                 android:id="@+id/reviews_not_available"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="@dimen/overview_heading_padding_top"
                 android:text="@string/no_reviews_available_yet"
                 android:textSize="@dimen/sub_heading"
                 android:textStyle="normal"
