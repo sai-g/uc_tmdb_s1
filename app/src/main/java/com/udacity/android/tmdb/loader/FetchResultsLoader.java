@@ -68,8 +68,6 @@ public class FetchResultsLoader extends AsyncTaskLoader<List<MovieInfo>> {
         }
 
         try {
-            TmdbMovies tmdbMovies = TMDB_API.getMovies();
-
             MovieResultsPage movieResultsPage = null;
 
             if (Objects.equals(sortOption, SortBy.FAVORITES)) {
@@ -78,19 +76,22 @@ public class FetchResultsLoader extends AsyncTaskLoader<List<MovieInfo>> {
                 return convertDbInfoToMovieInfo(cursor);
             }
             else if (Objects.equals(sortOption, SortBy.TOP_RATED)) {
+                TmdbMovies tmdbMovies = TMDB_API.getMovies();
                 movieResultsPage = tmdbMovies.getTopRatedMovies(null, currentPage);
             }
             else if (Objects.equals(sortOption, SortBy.POPULAR)) {
+                TmdbMovies tmdbMovies = TMDB_API.getMovies();
                 movieResultsPage = tmdbMovies.getPopularMovies(null, currentPage);
             }
             else {
+                TmdbMovies tmdbMovies = TMDB_API.getMovies();
                 movieResultsPage = tmdbMovies.getNowPlayingMovies(null, currentPage);
             }
 
             if(movieResultsPage != null) {
                 movieInfos = convertMovieDbToInfo(movieResultsPage.getResults());
             }
-        } catch (Exception ex) {
+        } catch (Throwable ex) {
             // TmDB API throw MovieDbException, but Async task catches it and throw a Throwable. Because of this app is crashing
             // Tried to override onCancelled by catching MovieDbException here, but didn't work since Aysnc task still throw a Throwable
             Log.e("Movie DB Exception", "No Internet Connectivity "+ex);

@@ -49,7 +49,8 @@
             android:layout_centerHorizontal="true"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/favorite_button" />
+            app:layout_constraintTop_toTopOf="@+id/favorite_button"
+            android:layout_marginTop="8dp" />
 
             <!-- this layout contains title, year, rating and popularity -->
         <LinearLayout

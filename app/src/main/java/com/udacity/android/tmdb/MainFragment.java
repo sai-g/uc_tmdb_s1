@@ -42,6 +42,8 @@ public class MainFragment extends Fragment implements MovieAdapter.MovieAdapterO
     private ProgressBar mLoadingIndicator;
 
     private TextView mErrorDisplayView;
+    private TextView mNoFavoritesView;
+
     private int mCurrentPage;
     private int mCurrentVisiblePosition;
 
@@ -60,6 +62,8 @@ public class MainFragment extends Fragment implements MovieAdapter.MovieAdapterO
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view_movies);
 
         mErrorDisplayView = (TextView) rootView.findViewById(R.id.movie_error_message_display);
+
+        mNoFavoritesView = (TextView) rootView.findViewById(R.id.no_favorites);
 
         // Recycler view to use LinearLayout Manager with VERTICAL orientation
         // Here Layout starts from top to bottom, so reverse layout set to false
@@ -139,7 +143,8 @@ public class MainFragment extends Fragment implements MovieAdapter.MovieAdapterO
      * to show recycler view and hide error message
      */
     private void showMovieDbDataView() {
-        mErrorDisplayView.setVisibility(View.INVISIBLE);
+        mNoFavoritesView.setVisibility(View.GONE);
+        mErrorDisplayView.setVisibility(View.GONE);
         mRecyclerView.setVisibility(View.VISIBLE);
     }
 
@@ -147,8 +152,13 @@ public class MainFragment extends Fragment implements MovieAdapter.MovieAdapterO
      * to show error message and hide recycler view
      */
     private void showErrorMessageView() {
-        mRecyclerView.setVisibility(View.INVISIBLE);
-        mErrorDisplayView.setVisibility(View.VISIBLE);
+
+        mRecyclerView.setVisibility(View.GONE);
+        if (Objects.equals(mCurrentMovieMethod, SortBy.FAVORITES)) {
+            mNoFavoritesView.setVisibility(View.VISIBLE);
+        } else {
+            mErrorDisplayView.setVisibility(View.VISIBLE);
+        }
     }
 
     /**
@@ -214,23 +224,28 @@ public class MainFragment extends Fragment implements MovieAdapter.MovieAdapterO
     @Override
     public void onLoadFinished(Loader<List<MovieInfo>> loader, List<MovieInfo> data) {
 
+        mMovieAdapter.setMovieData(data);
+
+        int adapterItemCount = mMovieAdapter.getItemCount();
         if(data != null) {
             //increment current page when movies are returned
-            mCurrentPage++;
+            mCurrentPage = (adapterItemCount / 20) + 1;
             showMovieDbDataView();
-            mMovieAdapter.setMovieData(data);
         }
         // clear data in adapter and show error message when there is no response from api
-        else {
-            mMovieAdapter.clearMovieData();
+        if (adapterItemCount == 0) {
             showErrorMessageView();
+        }
+
+
+
+        // scroll to current visible position on rotation
+        if (mCurrentVisiblePosition > 0) {
+            mRecyclerView.scrollToPosition(mCurrentVisiblePosition);
         }
 
         mLoadingIndicator.setVisibility(View.GONE);
 
-        // scroll to current visible position on rotation
-        if (mCurrentVisiblePosition > 0)
-            mRecyclerView.scrollToPosition(mCurrentVisiblePosition);
     }
 
     @Override

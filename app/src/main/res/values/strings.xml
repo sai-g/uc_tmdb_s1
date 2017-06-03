@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">The Movie DB</string>
-    <string name="movie_title">%1$s (%2$s)</string>
+    <!--<string name="movie_title">%1$s (%2$s)</string>-->
+    <string name="movie_title">%1$s</string>
     <string name="movie_user_rating">User Rating : %1$s</string>
     <string name="movie_popularity">Popularity : %1$s</string>
 
@@ -12,6 +13,7 @@
     <string name="overview">Overview</string>
     <string name="reviews">Reviews</string>
     <string name="error_message_no_resource">An error has occurred while loading movies. Please try again later</string>
+    <string name="no_favorites">Add your favorite movies here.</string>
     <string name="favorites">Favorites</string>
     <string name="trailers">Trailers</string>
     <string name="no_reviews_available_yet">No reviews available yet</string>

@@ -23,6 +23,16 @@
         android:textSize="@dimen/main_heading_size"
         android:visibility="invisible" />
 
+    <TextView
+        android:id="@+id/no_favorites"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical|center"
+        android:padding="@dimen/sub_heading"
+        android:text="@string/no_favorites"
+        android:textSize="@dimen/main_heading_size"
+        android:visibility="gone" />
+
     <ProgressBar
         android:id="@+id/movie_loading_indicator"
         android:layout_height="wrap_content"

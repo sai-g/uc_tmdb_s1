@@ -278,11 +278,17 @@ public class MovieInfoFragment extends Fragment implements LoaderManager.LoaderC
             mMovieTitle.setTag(movieInfo.getId() + "-" + movieInfo.getTitle() + "-" + movieInfo.getOriginalTitle());
 
             // set textview with string formatted from strings xml
-            setStringResource(mMovieTitle, R.string.movie_title, movieInfo.getOriginalTitle(), movieInfo.getReleaseDate().split("-")[0]);
+            setStringResource(mMovieTitle, R.string.movie_title, movieInfo.getOriginalTitle());
 
             // movie user rating
-            mMovieRating.setTag(movieInfo.getVoteAverage());
-            mMovieRating.setRating(movieInfo.getVoteAverage()/2);
+            if (movieInfo.getUserRating() > 0) {
+                mMovieRating.setTag(movieInfo.getUserRating());
+                mMovieRating.setRating(movieInfo.getUserRating()/2);
+            } else {
+                mMovieRating.setTag(movieInfo.getVoteAverage());
+                mMovieRating.setRating(movieInfo.getVoteAverage()/2);
+            }
+
             //setStringResource(mMovieRating, R.string.movie_user_rating, DECIMAL_FORMAT.format(data.getVoteAverage()));
 
             // movie popularity
