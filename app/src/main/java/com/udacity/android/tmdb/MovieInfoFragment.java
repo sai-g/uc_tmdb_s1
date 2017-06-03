@@ -212,6 +212,7 @@ public class MovieInfoFragment extends Fragment implements LoaderManager.LoaderC
         String userRating = Float.toString((Float) mMovieRating.getTag());
         String popularity = Float.toString((Float) mMoviePopularity.getTag());
         String imagePath = (String) mMoviePoster.getTag();
+        String overview = mMovieOverview.getText().toString();
 
         byte[] reviews = (byte[]) mReviewsNotAvailable.getTag();
         byte[] trailers = (byte[]) mTrailersNotAvailable.getTag();
@@ -223,6 +224,7 @@ public class MovieInfoFragment extends Fragment implements LoaderManager.LoaderC
         values.put(FavoritesTable.COLUMN_MOVIE_YEAR, releaseDate);
         values.put(FavoritesTable.COLUMN_USER_RATING, userRating);
         values.put(FavoritesTable.COLUMN_POPULARITY, popularity);
+        values.put(FavoritesTable.COLUMN_OVERVIEW, overview);
 
         values.put(FavoritesTable.COLUMN_REVIEWS, reviews);
         values.put(FavoritesTable.COLUMN_VIDEOS, trailers);
@@ -346,8 +348,12 @@ public class MovieInfoFragment extends Fragment implements LoaderManager.LoaderC
                 }
             }
             mTrailersNotAvailable.setTag(convertObjToBytes(movieDb.getVideos()));
-        } else {
+        }
+
+        if (mTrailersAdapter.getVideos() == null || mTrailersAdapter.getVideos().isEmpty()) {
             mTrailersNotAvailable.setVisibility(View.VISIBLE);
         }
+
     }
+
 }

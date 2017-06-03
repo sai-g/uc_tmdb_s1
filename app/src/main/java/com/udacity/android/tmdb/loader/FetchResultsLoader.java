@@ -7,11 +7,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.udacity.android.tmdb.constants.SortBy;
 import com.udacity.android.tmdb.contentprovider.FavoritesContentProvider;
 import com.udacity.android.tmdb.model.MovieInfo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import info.movito.themoviedbapi.TmdbMovies;
 import info.movito.themoviedbapi.model.MovieDb;
@@ -58,10 +60,8 @@ public class FetchResultsLoader extends AsyncTaskLoader<List<MovieInfo>> {
     public List<MovieInfo> loadInBackground() {
 
         List<MovieInfo> movieInfos = null;
-        TmdbMovies.MovieMethod currentMethod = (TmdbMovies.MovieMethod) mCurrentMovieBundle.getSerializable(SORT_OPTION);
+        String sortOption = mCurrentMovieBundle.getString(SORT_OPTION);
         int currentPage = mCurrentMovieBundle.getInt(CURRENT_PAGE);
-
-        boolean loadFavorites = mCurrentMovieBundle.getBoolean("LOAD_FAVORITES");
 
         if (mCurrentMovieBundle.containsKey(MOVIES_LIST)) {
             return mCurrentMovieBundle.getParcelableArrayList(MOVIES_LIST);
@@ -72,15 +72,15 @@ public class FetchResultsLoader extends AsyncTaskLoader<List<MovieInfo>> {
 
             MovieResultsPage movieResultsPage = null;
 
-            if (loadFavorites) {
+            if (Objects.equals(sortOption, SortBy.FAVORITES)) {
                 Uri queryUri = FavoritesContentProvider.CONTENT_URI;
                 Cursor cursor = getContext().getContentResolver().query(queryUri, null, null, null, null);
                 return convertDbInfoToMovieInfo(cursor);
             }
-            else if (TmdbMovies.MovieMethod.top_rated == currentMethod) {
+            else if (Objects.equals(sortOption, SortBy.TOP_RATED)) {
                 movieResultsPage = tmdbMovies.getTopRatedMovies(null, currentPage);
             }
-            else if (TmdbMovies.MovieMethod.popular == currentMethod) {
+            else if (Objects.equals(sortOption, SortBy.POPULAR)) {
                 movieResultsPage = tmdbMovies.getPopularMovies(null, currentPage);
             }
             else {

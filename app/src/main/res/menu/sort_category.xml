@@ -5,15 +5,15 @@
     tools:context=".MainActivity">
 
     <item android:title="@string/most_popular"
-        android:id="@+id/sort_most_popular"
+        android:id="@+id/most_popular"
         app:showAsAction="never"
         android:orderInCategory="1"/>
     <item android:title="@string/highest_rated"
-        android:id="@+id/sort_highest_rated"
+        android:id="@+id/highest_rated"
         app:showAsAction="never"
         android:orderInCategory="2"/>
     <item android:title="@string/favorites"
-        android:id="@+id/view_favorites"
+        android:id="@+id/favorites"
         app:showAsAction="never"
         android:orderInCategory="3" />
 

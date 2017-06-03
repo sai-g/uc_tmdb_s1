@@ -5,7 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import info.movito.themoviedbapi.TmdbMovies;
+import com.udacity.android.tmdb.constants.SortBy;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -30,18 +30,18 @@ public class MainActivity extends AppCompatActivity {
         // Now prepare menu item to take actions899
         // Here, menu item can do sorting based on most popular movies or highest rated movies
         switch (item.getItemId()) {
-            case R.id.sort_highest_rated:
-                mainFragment.resetMovieMethod(TmdbMovies.MovieMethod.top_rated, false);
+            case R.id.highest_rated:
+                mainFragment.resetMovieMethod(SortBy.TOP_RATED);
                 break;
-            case R.id.sort_most_popular:
-                mainFragment.resetMovieMethod(TmdbMovies.MovieMethod.popular, false);
+            case R.id.most_popular:
+                mainFragment.resetMovieMethod(SortBy.POPULAR);
                 break;
-            case R.id.view_favorites:
+            case R.id.favorites:
                 // null is passed to handle favorites movie, true for favorite movies from db
-                mainFragment.resetMovieMethod(null, true);
+                mainFragment.resetMovieMethod(SortBy.FAVORITES);
                 break;
             default:
-                mainFragment.resetMovieMethod(TmdbMovies.MovieMethod.now_playing, true);
+                mainFragment.resetMovieMethod(SortBy.NOW_PLAYING);
                 break;
         }
         return super.onOptionsItemSelected(item);

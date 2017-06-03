@@ -90,4 +90,7 @@ public class MyTrailerRecyclerViewAdapter extends RecyclerView.Adapter<MyTrailer
         this.notifyItemRangeInserted(mVideos.size(), 1);
     }
 
+    public List<Video> getVideos() {
+        return mVideos;
+    }
 }

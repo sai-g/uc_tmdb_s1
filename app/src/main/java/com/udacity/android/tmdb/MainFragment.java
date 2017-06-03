@@ -18,13 +18,13 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.udacity.android.tmdb.adapter.MovieAdapter;
+import com.udacity.android.tmdb.constants.SortBy;
 import com.udacity.android.tmdb.loader.FetchResultsLoader;
 import com.udacity.android.tmdb.model.MovieInfo;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import info.movito.themoviedbapi.TmdbMovies;
+import java.util.Objects;
 
 import static com.udacity.android.tmdb.constants.BundleConstants.CURRENT_PAGE;
 import static com.udacity.android.tmdb.constants.BundleConstants.CURRENT_POSITION;
@@ -45,7 +45,7 @@ public class MainFragment extends Fragment implements MovieAdapter.MovieAdapterO
     private int mCurrentPage;
     private int mCurrentVisiblePosition;
 
-    private TmdbMovies.MovieMethod mCurrentMovieMethod = TmdbMovies.MovieMethod.now_playing;
+    private String mCurrentMovieMethod = SortBy.NOW_PLAYING;
     // constant int to uniquely identify the loader
     private static final int FETCH_RESULTS_LOADER = 100;
 
@@ -91,26 +91,26 @@ public class MainFragment extends Fragment implements MovieAdapter.MovieAdapterO
                 mCurrentPage = savedInstanceState.getInt(CURRENT_PAGE);
             }
             if (savedInstanceState.containsKey(SORT_OPTION)) {
-                mCurrentMovieMethod = (TmdbMovies.MovieMethod) savedInstanceState.getSerializable(SORT_OPTION);
+                mCurrentMovieMethod = savedInstanceState.getString(SORT_OPTION);
 
                 if (savedInstanceState.containsKey(MOVIES_LIST)) {
                     movieInfos = savedInstanceState.getParcelableArrayList(MOVIES_LIST);
-                    loadMovieDbData(false, movieInfos);
+                    loadMovieDbData(movieInfos);
                 }
             }
 
         } else {
-            // mCurrentMovieMethod = TmdbMovies.MovieMethod.now_playing;
+            // mCurrentMovieMethod = TmdbMovies.SortBy.now_playing;
             // reset current page whenever new layout is created
             resetCurrentPage();
-            loadMovieDbData(false, null);
+            loadMovieDbData(null);
         }
         // considering default movie method as now playing movies
 
         return rootView;
     }
 
-    private void loadMovieDbData(boolean loadFavorites, List<MovieInfo> movieInfos) {
+    private void loadMovieDbData(List<MovieInfo> movieInfos) {
 
         showMovieDbDataView();
 
@@ -118,10 +118,8 @@ public class MainFragment extends Fragment implements MovieAdapter.MovieAdapterO
 
         // loader takes bundle as input
         Bundle currentMovieBundle = new Bundle();
-        currentMovieBundle.putSerializable(SORT_OPTION, mCurrentMovieMethod);
+        currentMovieBundle.putString(SORT_OPTION, mCurrentMovieMethod);
         currentMovieBundle.putInt(CURRENT_PAGE, mCurrentPage);
-        if (loadFavorites)
-            currentMovieBundle.putBoolean("LOAD_FAVORITES", true);
 
         if (movieInfos != null) {
             currentMovieBundle.putParcelableArrayList(MOVIES_LIST, (ArrayList<? extends Parcelable>) movieInfos);
@@ -177,7 +175,7 @@ public class MainFragment extends Fragment implements MovieAdapter.MovieAdapterO
                 //check to see if we reached current threshold, request more movies when reaching current threshold
                 if(totalMoviesCount == getLastVisibleItemPosition() + 1) {
                     mCurrentVisiblePosition = 0;
-                    loadMovieDbData(false, null);
+                    loadMovieDbData(null);
                 }
 
             }
@@ -195,13 +193,13 @@ public class MainFragment extends Fragment implements MovieAdapter.MovieAdapterO
         startActivity(startChildActivityIntent);
     }
 
-    public void resetMovieMethod(TmdbMovies.MovieMethod movieMethod, boolean loadFavorites) {
-        mCurrentMovieMethod = movieMethod;
+    public void resetMovieMethod(String sortBy) {
+        mCurrentMovieMethod = sortBy;
         // reset page information
         resetCurrentPage();
         mMovieAdapter.clearMovieData();
         // call API to get movies
-        loadMovieDbData(loadFavorites, null);
+        loadMovieDbData(null);
     }
 
     private void resetCurrentPage() {
@@ -249,8 +247,22 @@ public class MainFragment extends Fragment implements MovieAdapter.MovieAdapterO
         if (mMovieAdapter.getMovieData() != null) {
             outState.putParcelableArrayList(MOVIES_LIST, (ArrayList<? extends Parcelable>) mMovieAdapter.getMovieData());
         }
-        outState.putSerializable(SORT_OPTION, mCurrentMovieMethod);
+        outState.putString(SORT_OPTION, mCurrentMovieMethod);
         outState.putInt(CURRENT_PAGE, mCurrentPage);
         outState.putInt(CURRENT_POSITION, getLastVisibleItemPosition());
     }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        //refresh the page in case of favorites
+        if (Objects.equals(mCurrentMovieMethod, SortBy.FAVORITES)) {
+            mMovieAdapter.clearMovieData();
+            loadMovieDbData(null);
+        }
+    }
+
+
 }

@@ -24,6 +24,8 @@ import static com.squareup.picasso.Picasso.with;
 
 public class StringUIUtil {
 
+    private StringUIUtil() {}
+
     // formatter to show numbers as xx.x or x.x
     public final static DecimalFormat DECIMAL_FORMAT = new DecimalFormat("0.0");
 
