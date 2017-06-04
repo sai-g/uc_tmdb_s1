@@ -8,6 +8,8 @@ import android.database.sqlite.SQLiteDatabase;
 
 public class FavoritesTable {
 
+    private FavoritesTable() {}
+
     // table name
     public static final String TABLE_NAME = "favorite_movies";
     // table columns
@@ -23,16 +25,19 @@ public class FavoritesTable {
     public static final String COLUMN_REVIEWS = "reviews";
     public static final String COLUMN_VIDEOS = "videos";
 
+    private static final String TEXT_NOT_NULL = " text not null,";
+    private static final String TEXT = " text,";
+
     // sql for database creation
     private static final String DATABASE_CREATE = "create table " + TABLE_NAME + "("
             + COLUMN_ID + " integer primary key,"
-            + COLUMN_MOVIE_TITLE + " text not null,"
-            + COLUMN_MOVIE_ORIGINAL_TITLE + " text not null,"
-            + COLUMN_MOVIE_YEAR + " text not null,"
-            + COLUMN_USER_RATING + " text,"
-            + COLUMN_POPULARITY + " text,"
-            + COLUMN_OVERVIEW + " text,"
-            + COLUMN_POSTERPATH + " text,"
+            + COLUMN_MOVIE_TITLE + TEXT_NOT_NULL
+            + COLUMN_MOVIE_ORIGINAL_TITLE + TEXT_NOT_NULL
+            + COLUMN_MOVIE_YEAR + TEXT_NOT_NULL
+            + COLUMN_USER_RATING + TEXT
+            + COLUMN_POPULARITY + TEXT
+            + COLUMN_OVERVIEW + TEXT
+            + COLUMN_POSTERPATH + TEXT
             + COLUMN_REVIEWS + " blob,"
             + COLUMN_VIDEOS + " blob"
             + ");";

@@ -193,7 +193,9 @@ public class MainFragment extends Fragment implements MovieAdapter.MovieAdapterO
     }
 
     @Override
-    public void onClick(MovieInfo selectedMovie) {
+    public void onClick(int adapterPosition, MovieInfo selectedMovie) {
+
+        mCurrentVisiblePosition = adapterPosition;
         Context context = getActivity();
         Class destinationActivity = MovieInfoActivity.class;
 
@@ -237,8 +239,6 @@ public class MainFragment extends Fragment implements MovieAdapter.MovieAdapterO
             showErrorMessageView();
         }
 
-
-
         // scroll to current visible position on rotation
         if (mCurrentVisiblePosition > 0) {
             mRecyclerView.scrollToPosition(mCurrentVisiblePosition);
@@ -264,7 +264,7 @@ public class MainFragment extends Fragment implements MovieAdapter.MovieAdapterO
         }
         outState.putString(SORT_OPTION, mCurrentMovieMethod);
         outState.putInt(CURRENT_PAGE, mCurrentPage);
-        outState.putInt(CURRENT_POSITION, getLastVisibleItemPosition());
+        outState.putInt(CURRENT_POSITION, mCurrentVisiblePosition > 0 ? mCurrentVisiblePosition : getLastVisibleItemPosition());
     }
 
 

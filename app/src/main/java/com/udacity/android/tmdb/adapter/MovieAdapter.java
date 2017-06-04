@@ -35,7 +35,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
 
         TmdbApi TMDB_API = NetworkUtil.getTmdbApi();
 
-        void onClick(MovieInfo selectedMovie);
+        void onClick(int position, MovieInfo selectedMovie);
     }
 
     public MovieAdapter(MovieAdapterOnClickHandler mClickHandler) {
@@ -89,7 +89,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         public void onClick(View v) {
             int adapterPosition = getAdapterPosition();
             MovieInfo selectedMovie = mMovieData.get(adapterPosition);
-            mClickHandler.onClick(selectedMovie);
+            mClickHandler.onClick(adapterPosition, selectedMovie);
         }
 
         void bind(MovieInfo movieInfo) {

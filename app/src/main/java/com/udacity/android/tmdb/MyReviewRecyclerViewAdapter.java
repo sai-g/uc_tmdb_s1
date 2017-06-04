@@ -6,23 +6,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.udacity.android.tmdb.ReviewFragment.OnListFragmentInteractionListener;
-import com.udacity.android.tmdb.dummy.DummyContent.DummyItem;
-
 import java.util.List;
 
 import info.movito.themoviedbapi.model.Reviews;
 
-/**
- * {@link RecyclerView.Adapter} that can display a {@link DummyItem} and makes a call to the
- * specified {@link OnListFragmentInteractionListener}.
- * TODO: Replace the implementation with code for your data type.
- */
 public class MyReviewRecyclerViewAdapter extends RecyclerView.Adapter<MyReviewRecyclerViewAdapter.ViewHolder> {
 
     private List<Reviews> mReviews;
 
     public MyReviewRecyclerViewAdapter() {
+        super();
     }
 
     @Override

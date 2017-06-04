@@ -73,9 +73,6 @@ public class MovieInfoFragment extends Fragment implements LoaderManager.LoaderC
     @BindView(R.id.favorite_button)
     MaterialFavoriteButton mFavoriteButton;
 
-    private RecyclerView mReviewsRecyclerView;
-    private RecyclerView mTrailerRecyclerView;
-
     private Unbinder unbinder;
 
     private MyReviewRecyclerViewAdapter mReviewsAdapter;
@@ -116,12 +113,12 @@ public class MovieInfoFragment extends Fragment implements LoaderManager.LoaderC
 
             // reviews segment
             mReviewsAdapter = new MyReviewRecyclerViewAdapter();
-            mReviewsRecyclerView = (RecyclerView) rootView.findViewById(R.id.review_list);
+            RecyclerView mReviewsRecyclerView = (RecyclerView) rootView.findViewById(R.id.review_list);
             mReviewsRecyclerView.setAdapter(mReviewsAdapter);
 
             // trailer segment
             mTrailersAdapter = new MyTrailerRecyclerViewAdapter(this);
-            mTrailerRecyclerView = (RecyclerView) rootView.findViewById(R.id.trailer_list);
+            RecyclerView mTrailerRecyclerView = (RecyclerView) rootView.findViewById(R.id.trailer_list);
             mTrailerRecyclerView.setAdapter(mTrailersAdapter);
 
             initMovieInfoFragment(movieInfo);

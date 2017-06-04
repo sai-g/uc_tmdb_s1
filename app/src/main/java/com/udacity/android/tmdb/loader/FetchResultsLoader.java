@@ -93,7 +93,7 @@ public class FetchResultsLoader extends AsyncTaskLoader<List<MovieInfo>> {
             }
         } catch (Throwable ex) {
             // TmDB API throw MovieDbException, but Async task catches it and throw a Throwable. Because of this app is crashing
-            // Tried to override onCancelled by catching MovieDbException here, but didn't work since Aysnc task still throw a Throwable
+            // Tried to override onCancelled by catching MovieDbException here, but didn't work since Aysnc still throw a Throwable
             Log.e("Movie DB Exception", "No Internet Connectivity "+ex);
         }
         return movieInfos;

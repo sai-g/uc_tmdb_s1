@@ -29,8 +29,9 @@ public class StringUIUtil {
     // formatter to show numbers as xx.x or x.x
     public final static DecimalFormat DECIMAL_FORMAT = new DecimalFormat("0.0");
 
-    private static SimpleDateFormat SHORTENED_DATE_FORMAT = new SimpleDateFormat("MMM dd, yyyy");
-    private static SimpleDateFormat INPUT_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+    private static SimpleDateFormat shortenedDateFormat = null;
+    private static SimpleDateFormat inputDateFormat = null;
+
 
     public static String getFinalString(View view, int strResourceId, String... strings) {
 
@@ -51,8 +52,8 @@ public class StringUIUtil {
 
         if (dateStr != null) {
             try {
-                Date date = INPUT_DATE_FORMAT.parse(dateStr);
-                return SHORTENED_DATE_FORMAT.format(date);
+                Date date = getInputDateFormat().parse(dateStr);
+                return getShortenedDateFormat().format(date);
             } catch (ParseException e) {
                 return null;
             }
@@ -100,4 +101,16 @@ public class StringUIUtil {
         return gson.toJson(object).getBytes();
     }
 
+    private static SimpleDateFormat getShortenedDateFormat() {
+        if (shortenedDateFormat == null) {
+            shortenedDateFormat = new SimpleDateFormat("MMM dd, yyyy");
+        }
+        return shortenedDateFormat;
+    }
+    private static SimpleDateFormat getInputDateFormat() {
+        if (inputDateFormat == null) {
+            inputDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        }
+        return inputDateFormat;
+    }
 }

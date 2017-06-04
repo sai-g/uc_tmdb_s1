@@ -10,6 +10,8 @@ import info.movito.themoviedbapi.TmdbApi;
 
 public class NetworkUtil {
 
+    private NetworkUtil() {}
+
     public static TmdbApi getTmdbApi() {
         return new TmdbApi(BuildConfig.TMDB_API_KEY);
     }

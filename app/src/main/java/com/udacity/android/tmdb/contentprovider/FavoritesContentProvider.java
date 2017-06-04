@@ -46,12 +46,11 @@ public class FavoritesContentProvider extends ContentProvider {
     @Override
     public Cursor query(Uri uri, String[] projection, String selection,
                         String[] selectionArgs, String sortOrder) {
-        // TODO: Implement this to handle query requests from clients.
+
         // using query builder to create sql query
         SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
 
         // validate all columns
-
         queryBuilder.setTables(FavoritesTable.TABLE_NAME);
 
         int uriTypes = URI_MATCHER.match(uri);
@@ -69,23 +68,22 @@ public class FavoritesContentProvider extends ContentProvider {
 
         SQLiteDatabase database = dbHelper.getReadableDatabase();
 
-        Cursor cursor = queryBuilder.query(database, projection, selection, selectionArgs, null, null, sortOrder);
-        return cursor;
+        return queryBuilder.query(database, projection, selection, selectionArgs, null, null, sortOrder);
 
     }
 
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
+
         // to handle requests to delete one or more rows.
         int uriType = URI_MATCHER.match(uri);
         SQLiteDatabase database = dbHelper.getWritableDatabase();
         int id = 0;
-        switch (uriType) {
-            case FAVORITES_ID:
-                id = database.delete(FavoritesTable.TABLE_NAME, selection, selectionArgs);
-                break;
-            default:
-                throw new IllegalArgumentException("Unknown URI: " + uri);
+        if (uriType == FAVORITES_ID) {
+            id = database.delete(FavoritesTable.TABLE_NAME, selection, selectionArgs);
+
+        } else {
+            throw new IllegalArgumentException("Unknown URI: " + uri);
         }
 
         return id;
@@ -104,12 +102,11 @@ public class FavoritesContentProvider extends ContentProvider {
         int uriType = URI_MATCHER.match(uri);
         SQLiteDatabase database = dbHelper.getWritableDatabase();
         long id = 0;
-        switch (uriType) {
-            case FAVORITES_ID:
-                id = database.insert(FavoritesTable.TABLE_NAME, null, values);
-                break;
-            default:
-                throw new IllegalArgumentException("Unknown URI: " + uri);
+        if (uriType == FAVORITES_ID) {
+            id = database.insert(FavoritesTable.TABLE_NAME, null, values);
+
+        } else {
+            throw new IllegalArgumentException("Unknown URI: " + uri);
         }
 
         getContext().getContentResolver().notifyChange(uri, null);
